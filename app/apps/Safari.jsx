@@ -1,167 +1,282 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
+import { 
+  ChevronLeft, ChevronRight, RotateCcw, 
+  Home, Lock, Search, 
+  ExternalLink, Globe, AlertCircle, PlusCircle, Layers
+} from "lucide-react"
+
+const DEFAULT_URL = "https://www.google.com";
+const GOOGLE_WEBHP = "https://www.google.com/webhp?igu=1&gws_rd=ssl";
 
 export default function Safari() {
-  const [url, setUrl] = useState("")
-  const [input, setInput] = useState("")
+  const [url, setUrl] = useState(DEFAULT_URL)
+  const [input, setInput] = useState(DEFAULT_URL)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [history, setHistory] = useState([DEFAULT_URL])
+  const [historyIndex, setHistoryIndex] = useState(0)
 
-  const suggestions = [
-    "Shivraj portfolio",
-    "Best full stack projects",
-    "How to build a macOS in React",
-    "Next.js optimization techniques"
-  ]
-
-  const handleSearch = useCallback((value) => {
-    let q = (value || input).trim()
+  const handleSearch = useCallback((searchValue) => {
+    let q = (searchValue || input).trim()
     if (!q) return
 
     let finalUrl = q
 
+    // Redirect old LinkedIn profile to new one
+    if (q.includes("linkedin.com/in/shivrajpawar")) {
+      q = "https://www.linkedin.com/in/shivraj-pawar-4a632837b"
+    }
+
     if (!/^https?:\/\//i.test(q)) {
-      if (q.includes(".")) {
+      if (q.includes(".") && !q.includes(" ")) {
         finalUrl = "https://" + q
       } else {
         finalUrl = `https://www.google.com/search?q=${encodeURIComponent(q)}&igu=1`
       }
+    } else if (!q.startsWith("http://") && !q.startsWith("https://")) {
+      finalUrl = "https://" + q;
     }
 
     setLoading(true)
+    setError(null)
     setUrl(finalUrl)
     setInput(finalUrl)
     
-    // Simulate loading
+    setHistory(prev => [...prev.slice(0, historyIndex + 1), finalUrl])
+    setHistoryIndex(prev => prev + 1)
+    
+    setTimeout(() => setLoading(false), 600)
+  }, [input, historyIndex])
+
+  const goBack = () => {
+    if (historyIndex > 0) {
+      const prevUrl = history[historyIndex - 1]
+      setUrl(prevUrl)
+      setInput(prevUrl)
+      setHistoryIndex(prev => prev - 1)
+      setLoading(true)
+      setTimeout(() => setLoading(false), 400)
+    }
+  }
+
+  const goForward = () => {
+    if (historyIndex < history.length - 1) {
+      const nextUrl = history[historyIndex + 1]
+      setUrl(nextUrl)
+      setInput(nextUrl)
+      setHistoryIndex(prev => prev + 1)
+      setLoading(true)
+      setTimeout(() => setLoading(false), 400)
+    }
+  }
+
+  const goHome = () => {
+    setLoading(true)
+    setUrl(DEFAULT_URL)
+    setInput(DEFAULT_URL)
+    setHistory(prev => [...prev.slice(0, historyIndex + 1), DEFAULT_URL])
+    setHistoryIndex(prev => prev + 1)
     setTimeout(() => setLoading(false), 300)
-  }, [input])
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch()
   }
 
-  const goHome = () => {
-    setUrl("")
-    setInput("")
+  const openInNewTab = () => {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
   }
 
-  return (
-    <div className="bg-white dark:bg-zinc-900 h-full flex flex-col overflow-hidden font-sans select-none">
-      
-      {/* Navigation Controls + Search Bar */}
-      <div className="h-12 flex items-center px-4 gap-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800/90 shrink-0">
-        
-        <div className="flex items-center gap-2">
-          <button onClick={goHome} className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-md transition-colors text-zinc-600 dark:text-zinc-400">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </button>
-          
-          <div className="flex items-center gap-0.5">
-             <button className="p-1.5 text-zinc-300 dark:text-zinc-600 cursor-not-allowed"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg></button>
-             <button className="p-1.5 text-zinc-300 dark:text-zinc-600 cursor-not-allowed"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
-          </div>
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="h-full flex flex-col items-center justify-center bg-white dark:bg-[#1e1e1e]">
+          <RotateCcw className="w-8 h-8 text-blue-500 animate-spin mb-4" />
+          <p className="text-zinc-500 text-sm">Loading...</p>
         </div>
+      );
+    }
 
-        <div className="flex-1 relative group max-w-2xl mx-auto">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-             <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-          </div>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Search or type URL"
-            className="w-full h-8 pl-10 pr-10 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-[13px] text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 ring-blue-500/30 transition-all font-medium"
-          />
-          {loading && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-               <div className="w-3.5 h-3.5 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+    // Google homepage - use webhp URL like Ubuntu Chrome
+    if (url.includes("google.com") && !url.includes("google.com/search")) {
+      return (
+        <iframe
+          src={GOOGLE_WEBHP}
+          className="w-full h-full border-0 bg-white"
+          title="Google Search"
+        />
+      );
+    }
+
+    // Google search - iframe with search URL (using igu=1)
+    if (url.includes("google.com/search")) {
+      const searchUrl = url.includes("igu=1") ? url : `${url}&igu=1`;
+      return (
+        <iframe
+          src={searchUrl}
+          className="w-full h-full border-0 bg-white"
+          title="Google Search Results"
+        />
+      );
+    }
+
+    // Custom placeholders for sites that block embedding
+    if (url.includes("github.com")) {
+      return (
+        <div className="h-full bg-white dark:bg-[#0d1117] p-12 overflow-auto text-zinc-900 dark:text-white">
+          <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-zinc-900 dark:bg-white rounded-2xl flex items-center justify-center mb-8 shadow-xl">
+              <img src="/github.svg" alt="GitHub" className="w-12 h-12 invert dark:invert-0" />
             </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-3 text-zinc-400">
-           <button className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-md"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg></button>
-           <button className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-md"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M12 4v16m8-8H4"/></svg></button>
-        </div>
-      </div>
-
-      {/* Main Viewport */}
-      <div className="flex-1 relative bg-white dark:bg-zinc-950">
-        
-        {/* Homepage State - Only visible when URL is empty */}
-        {!url ? (
-          <div className="h-full flex flex-col items-center pt-[15vh] px-6">
-            <h1 className="text-6xl font-bold tracking-tighter mb-12 select-none">
-                <span className="text-blue-500">G</span>
-                <span className="text-red-500">o</span>
-                <span className="text-yellow-500">o</span>
-                <span className="text-blue-500">g</span>
-                <span className="text-green-500">l</span>
-                <span className="text-red-500">e</span>
-            </h1>
-
-            <div className="w-full max-w-xl flex flex-col gap-8">
-              <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2">
-                   <svg className="w-5 h-5 text-zinc-400 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                </div>
-                <input
-                  autoFocus
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full h-14 pl-14 pr-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-sm hover:shadow-md focus:shadow-lg focus:outline-none transition-shadow text-base text-zinc-900 dark:text-zinc-100"
-                  placeholder="Search Google or type a URL"
-                />
-              </div>
-
-              {/* Suggestions */}
-              <div className="flex gap-3 flex-wrap justify-center">
-                {suggestions.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => handleSearch(s)}
-                    className="px-5 py-2 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full text-xs font-medium text-zinc-600 dark:text-zinc-400 transition-colors"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-
-              {/* Shortcuts */}
-              <div className="grid grid-cols-4 md:grid-cols-4 gap-8 mt-4">
+            <h1 className="text-4xl font-bold mb-4 tracking-tight">GitHub</h1>
+            <p className="text-xl text-zinc-500 dark:text-zinc-400 mb-10 max-w-xl">
+              Where the world builds software. This is a secure simulation for the portfolio experience.
+            </p>
+            <div className="w-full bg-zinc-50 dark:bg-zinc-900/50 rounded-3xl border border-black/5 dark:border-white/5 p-8 text-left shadow-sm">
+              <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-blue-500" />
+                Featured Repositories
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { name: "GitHub", url: "github.com", color: "bg-zinc-900", initial: "G" },
-                  { name: "Twitter", url: "twitter.com", color: "bg-blue-400", initial: "T" },
-                  { name: "LinkedIn", url: "linkedin.com", color: "bg-blue-600", initial: "L" },
-                  { name: "YouTube", url: "youtube.com", color: "bg-red-500", initial: "Y" }
-                ].map((site) => (
-                  <div
-                    key={site.name}
-                    onClick={() => handleSearch(site.url)}
-                    className="flex flex-col items-center gap-3 group cursor-pointer"
-                  >
-                    <div className={`w-14 h-14 ${site.color} rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform`}>
-                      {site.initial}
+                  { name: "microsoft/vscode", lang: "TypeScript", color: "bg-blue-500" },
+                  { name: "facebook/react", lang: "JavaScript", color: "bg-yellow-400" },
+                  { name: "vercel/next.js", lang: "TypeScript", color: "bg-blue-500" },
+                  { name: "shivraj/mac-portfolio", lang: "JavaScript", color: "bg-yellow-400" }
+                ].map((repo) => (
+                  <div key={repo.name} className="p-4 rounded-xl bg-white dark:bg-zinc-800 border border-black/5 dark:border-white/5 hover:border-blue-500/50 transition-colors cursor-default">
+                    <span className="font-semibold text-blue-500 block mb-1">{repo.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full ${repo.color}`} />
+                      <span className="text-xs opacity-60 font-medium">{repo.lang}</span>
                     </div>
-                    <span className="text-[10px] font-bold opacity-60 group-hover:opacity-100">{site.name}</span>
                   </div>
                 ))}
               </div>
+              <button 
+                onClick={openInNewTab}
+                className="mt-8 flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors"
+              >
+                View original site <ExternalLink className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        ) : (
-          /* Browser Viewport - iframe mounts only when URL is active */
-          <div className="w-full h-full animate-in fade-in zoom-in-100 duration-500">
-            <iframe
-              key={url}
-              src={url}
-              className="w-full h-full border-0"
-              tabIndex={-1}
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-            />
+        </div>
+      );
+    }
+
+    if (url.includes("stackoverflow.com")) {
+      return (
+        <div className="h-full bg-white dark:bg-zinc-900 p-12 overflow-auto text-zinc-900 dark:text-white">
+           <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center shadow-lg">
+                  <span className="text-2xl font-bold text-white">?</span>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold">Stack Overflow</h1>
+                  <p className="text-zinc-500">Knowledge shared across the globe.</p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                {[
+                  "How to center a div horizontally and vertically?",
+                  "What is the difference between map() and forEach()?",
+                  "How to handle CORS in a Next.js API route?",
+                  "Getting started with GSAP animations in React"
+                ].map((q, i) => (
+                  <div key={i} className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-black/5 dark:border-white/5">
+                    <h3 className="text-blue-500 font-semibold mb-2 cursor-pointer hover:underline">{q}</h3>
+                    <div className="flex gap-2">
+                      <span className="px-2 py-1 bg-white dark:bg-zinc-700 text-[10px] rounded border border-black/5">javascript</span>
+                      <span className="px-2 py-1 bg-white dark:bg-zinc-700 text-[10px] rounded border border-black/5">react</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button onClick={openInNewTab} className="mt-8 text-blue-500 font-medium flex items-center gap-2">
+                Open Stack Overflow <ExternalLink className="w-4 h-4" />
+              </button>
+           </div>
+        </div>
+      );
+    }
+
+    // Default iframe for other sites
+    return (
+      <div className="relative w-full h-full bg-white">
+        <iframe 
+          src={url} 
+          className="w-full h-full border-0"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+          title="Web Browser"
+        />
+        {loading && (
+          <div className="absolute inset-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm flex items-center justify-center">
+            <RotateCcw className="w-8 h-8 text-blue-500 animate-spin" />
           </div>
         )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="h-full bg-white dark:bg-[#1c1c1e] flex flex-col overflow-hidden font-system select-none">
+      {/* macOS Safari Toolbar */}
+      <div className="h-11 bg-zinc-100/90 dark:bg-zinc-900/95 backdrop-blur-2xl border-b border-black/10 dark:border-white/10 flex items-center px-4 gap-4 shrink-0 z-20">
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={goBack} 
+            disabled={historyIndex <= 0}
+            className={`p-1.5 rounded-lg transition-colors ${historyIndex <= 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/5 dark:hover:bg-white/10 active:scale-95'}`}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={goForward} 
+            disabled={historyIndex >= history.length - 1}
+            className={`p-1.5 rounded-lg transition-colors ${historyIndex >= history.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/5 dark:hover:bg-white/10 active:scale-95'}`}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+
+        <button 
+          onClick={goHome}
+          className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all"
+        >
+          <Home className="w-4.5 h-4.5" />
+        </button>
+
+        <div className="flex-1 max-w-2xl mx-auto">
+          <div className="bg-white/50 dark:bg-zinc-800/50 border border-black/10 dark:border-white/10 rounded-lg px-4 py-1 flex items-center gap-2 group focus-within:bg-white dark:focus-within:bg-zinc-800 transition-all shadow-inner">
+            <Lock className="w-3 h-3 text-zinc-400" />
+            <input 
+              type="text" 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="flex-1 bg-transparent border-none outline-none text-xs text-center text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 font-medium"
+            />
+            {loading ? <RotateCcw className="w-3.5 h-3.5 text-blue-500 animate-spin" /> : <RotateCcw className="w-3.5 h-3.5 text-zinc-400 cursor-pointer hover:text-zinc-600" onClick={() => handleSearch()} />}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button onClick={openInNewTab} className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all text-zinc-500">
+            <ExternalLink className="w-4 h-4" />
+          </button>
+          <button className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all text-zinc-500">
+            <Layers className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 relative overflow-hidden bg-white">
+        {renderContent()}
       </div>
     </div>
   )

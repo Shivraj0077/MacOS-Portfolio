@@ -1,105 +1,38 @@
-import dynamic from 'next/dynamic'
+"use client"
+import { lazy } from 'react'
 
-const createAppLoader = (importFn) => {
-  const component = dynamic(importFn, { ssr: false });
-  component.preload = importFn;
-  return component;
-};
+import Finder from '../apps/Finder'
+import Launchpad from '../apps/Launchpad'
+import Projects from '../apps/Projects'
+import Safari from '../apps/Safari'
+import Notes from '../apps/Notes'
+import Terminal from '../apps/Terminal'
+import Spotify from '../apps/Spotify'
+import Settings from '../apps/Settings'
+import Calculator from '../apps/Calculator'
+import Maze from '../apps/Maze'
+import Bin from '../apps/Bin'
+import About from '../apps/About'
+import Contact from '../apps/Contact'
+import Experience from '../apps/Experience'
 
 const AppRegistry = {
-  finder: {
-    id: "finder",
-    name: "Finder",
-    component: createAppLoader(() => import('../apps/Finder')),
-    icon: "/finder.svg"
-  },
-  launchpad: {
-    id: "launchpad",
-    name: "Launchpad",
-    component: createAppLoader(() => import('../apps/Launchpad')),
-    icon: "/Launch Pad.svg"
-  },
-  projects: {
-    id: "projects",
-    name: "Projects",
-    component: createAppLoader(() => import('../apps/Projects')),
-    icon: "/app-store.svg"
-  },
-  safari: {
-    id: "safari",
-    name: "Safari",
-    component: createAppLoader(() => import('../apps/Safari')),
-    icon: "/safari.svg"
-  },
-  notes: {
-    id: "notes",
-    name: "Notes",
-    component: createAppLoader(() => import('../apps/Notes')),
-    icon: "/notes.svg"
-  },
-  photos: {
-    id: "photos",
-    name: "Photos",
-    component: createAppLoader(() => import('../apps/Photos')),
-    icon: "/photos.svg"
-  },
-  terminal: {
-    id: "terminal",
-    name: "Terminal",
-    component: createAppLoader(() => import('../apps/Terminal')),
-    icon: "/terminal.svg"
-  },
-  spotify: {
-    id: "spotify",
-    name: "Spotify",
-    component: createAppLoader(() => import('../apps/Spotify')),
-    icon: "/spotify.svg"
-  },
-  settings: {
-    id: "settings",
-    name: "Settings",
-    component: createAppLoader(() => import('../apps/Settings')),
-    icon: "/settings.svg"
-  },
-  calculator: {
-    id: "calculator",
-    name: "Calculator",
-    component: createAppLoader(() => import('../apps/Calculator')),
-    icon: "/calculator.svg",
-    resizable: false,
-    maximizable: false
-  },
-  maze: {
-    id: "maze",
-    name: "Maze",
-    component: createAppLoader(() => import('../apps/Maze')),
-    icon: "/maze.svg",
-    resizable: false
-  },
-  github: {
-    id: "github",
-    name: "GitHub",
-    url: "https://github.com/Shivraj0077",
-    icon: "/github.svg"
-  },
-  linkedin: {
-    id: "linkedin",
-    name: "LinkedIn",
-    url: "https://linkedin.com/in/shivrajpawar",
-    icon: "/linkedin.svg"
-  },
-  bin: {
-    id: "bin",
-    name: "Bin",
-    component: createAppLoader(() => import('../apps/Bin')),
-    icon: "/trash.png"
-  },
-  maps: {
-    id: "maps",
-    name: "Maps",
-    component: createAppLoader(() => import('../apps/Maps')),
-    icon: "/maps.png"
-  },
+  finder: { id: "finder", name: "Finder", component: Finder, icon: "/finder.svg" },
+  launchpad: { id: "launchpad", name: "Launchpad", component: Launchpad, icon: "/Launch Pad.svg" },
+  about: { id: "about", name: "About Me", component: About, icon: "/about.svg" },
+  projects: { id: "projects", name: "Projects", component: Projects, icon: "/app-store.svg" },
+  contact: { id: "contact", name: "Contact", component: Contact, icon: "/mail.png" },
+  experience: { id: "experience", name: "Experience", component: Experience, icon: "/projects.svg" },
+  safari: { id: "safari", name: "Safari", component: Safari, icon: "/safari.svg" },
+  notes: { id: "notes", name: "Notes", component: Notes, icon: "/notes.svg" },
+  terminal: { id: "terminal", name: "Terminal", component: Terminal, icon: "/terminal.svg" },
+  spotify: { id: "spotify", name: "Spotify", component: Spotify, icon: "/spotify.svg" },
+  settings: { id: "settings", name: "Settings", component: Settings, icon: "/settings.svg" },
+  calculator: { id: "calculator", name: "Calculator", component: Calculator, icon: "/calculator.svg", resizable: false, maximizable: false, minWidth: 280, minHeight: 400 },
+  maze: { id: "maze", name: "Maze", component: Maze, icon: "/maze.svg", resizable: false },
+  github: { id: "github", name: "GitHub", url: "https://github.com/Shivraj0077", icon: "/github.svg" },
+  linkedin: { id: "linkedin", name: "LinkedIn", url: "https://www.linkedin.com/in/shivraj-pawar-4a632837b", icon: "/linkedin.svg" },
+  bin: { id: "bin", name: "Bin", component: Bin, icon: "/trash.png" }
 };
 
 export default AppRegistry;

@@ -11,7 +11,7 @@ export default function Launchpad() {
   }
 
   return (
-    <div className='h-full w-full bg-black/40 backdrop-blur-3xl p-12 overflow-auto animate-in zoom-in-110 fade-in duration-500'>
+    <div className='h-full w-full bg-black/40 backdrop-blur-3xl p-12 overflow-auto '>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 max-w-[1200px] mx-auto pt-10">
         {Object.values(AppRegistry).map(app => (
           <div 

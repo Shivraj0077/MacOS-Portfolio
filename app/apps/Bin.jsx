@@ -74,7 +74,7 @@ export default function Bin() {
       {/* Custom Alert */}
       {alert && (
         <div className='fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000] flex items-center justify-center p-4'>
-          <div className='bg-white dark:bg-zinc-900 border border-white/20 shadow-2xl rounded-2xl w-full max-w-sm p-6 flex flex-col gap-4 transform animate-in scale-in-95 fade-in duration-200'>
+          <div className='bg-white dark:bg-zinc-900 border border-white/20 shadow-2xl rounded-2xl w-full max-w-sm p-6 flex flex-col gap-4 transform '>
             <div className='flex flex-col gap-1 text-center'>
               <h3 className='text-lg font-bold text-red-500'>{alert.title}</h3>
               <p className='text-sm opacity-70'>{alert.message}</p>

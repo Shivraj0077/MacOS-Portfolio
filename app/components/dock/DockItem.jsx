@@ -1,39 +1,37 @@
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState } from "react"
+import { motion, useSpring, useTransform } from "framer-motion"
 import styles from "./dock.module.css"
-import useStore from "@/app/store/useStore"
+import { useWindowStore } from "@/app/store/useStore"
 import AppRegistry from "@/app/registry/appRegistry"
 
-export default function DockItem({ app, isClosest, isRightNeighbor, mouseX }) {
+export default function DockItem({ app, mouseX }) {
   const itemRef = useRef(null)
-  const [scale, setScale] = useState(1)
   const [isHovered, setIsHovered] = useState(false)
-  const hoverTimeout = useRef(null)
-  const openApp = useStore((state) => state.openApp)
+  const openApp = useWindowStore((state) => state.openApp)
+  const isOpen = useWindowStore((state) => state.openApps.includes(app.id))
 
-  const BASE_SIZE = 48
+  const baseWidth = 40;
+  const distanceLimit = baseWidth * 6;
+  const dockMag = 1.6;
 
-  useEffect(() => {
-    if (mouseX === Infinity) {
-      setScale(1)
-      return
+  const distance = useTransform(mouseX, (val) => {
+    const el = itemRef.current;
+    if (el && val !== null) {
+      const rect = el.getBoundingClientRect();
+      const imgCenterX = rect.left + rect.width / 2;
+      return val - imgCenterX;
     }
-    if (isClosest) setScale(1.8)
-    else if (isRightNeighbor) setScale(1.3)
-    else setScale(1)
-  }, [mouseX, isClosest, isRightNeighbor])
+    return distanceLimit + 1;
+  });
 
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-    hoverTimeout.current = setTimeout(() => {
-      const appRef = AppRegistry[app.id]
-      if (appRef?.component?.preload) appRef.component.preload()
-    }, 300)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-    if (hoverTimeout.current) clearTimeout(hoverTimeout.current)
-  }
+  const widthPX = useSpring(
+    useTransform(
+      distance,
+      [-distanceLimit, -distanceLimit / (dockMag * 0.65), -distanceLimit / (dockMag * 0.85), 0, distanceLimit / (dockMag * 0.85), distanceLimit / (dockMag * 0.65), distanceLimit],
+      [baseWidth, baseWidth * (dockMag * 0.55), baseWidth * (dockMag * 0.75), baseWidth * dockMag, baseWidth * (dockMag * 0.75), baseWidth * (dockMag * 0.55), baseWidth]
+    ),
+    { stiffness: 1700, damping: 90 }
+  );
 
   const handleClick = () => {
     const appRef = AppRegistry[app.id]
@@ -41,82 +39,78 @@ export default function DockItem({ app, isClosest, isRightNeighbor, mouseX }) {
     else openApp(app.id)
   }
 
-  const iconSize = BASE_SIZE * scale
-
   return (
-  <div
-    ref={itemRef}
-    className={styles.dockItem}
-    style={{
-      width: 48 * scale,
-      height: 48,
-      transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
-    }}
-    onMouseEnter={handleMouseEnter}
-    onMouseLeave={handleMouseLeave}
-    onClick={handleClick}
-  >
-    <div
-      className={styles.iconWrapper}
+    <motion.div
+      ref={itemRef}
+      className={styles.dockItem}
       style={{
-        transformOrigin: "bottom center",
-        position: "absolute",
-        bottom: 0,
-        left: "50%",
-        transform: `translateX(-50%) scale(${scale})`,
-        transition: "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-        zIndex: isClosest ? 100 : (isRightNeighbor ? 50 : 10)
+        width: widthPX,
+        height: widthPX,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+        position: "relative",
+        cursor: "pointer"
       }}
+      onMouseEnter={() => {
+        setIsHovered(true)
+        // Prefetch data if it's Spotify or Settings (for wallpapers)
+        if (app.id === 'spotify') {
+          console.log('Prefetching Spotify tracks...')
+          // In a real app, this would start the background playback or buffering
+        }
+        if (app.id === 'settings') {
+          console.log('Prefetching wallpapers...')
+          // In a real app, this would start the image preloading
+        }
+      }}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
     >
-      {/* Tooltip moved INSIDE iconWrapper so it scales + lifts with the icon */}
       <div
         style={{
           opacity: isHovered ? 1 : 0,
           transform: `translateX(-50%) translateY(${isHovered ? '-6px' : '0px'})`,
           transition: 'opacity 0.18s ease-out, transform 0.18s ease-out',
           position: 'absolute',
-          bottom: '100%',        // sits just above the icon
+          bottom: '100%',
           left: '50%',
           backgroundColor: 'rgba(30,30,30,0.82)',
           backdropFilter: 'blur(6px)',
           color: '#fff',
           padding: '2px 8px',
           borderRadius: '4px',
-          fontSize: `${11 / scale}px`,  // counter-scale so text stays readable
-          fontWeight: '400',
+          fontSize: `11px`,
           whiteSpace: 'nowrap',
-          lineHeight: '1.4',
           pointerEvents: 'none',
           marginBottom: '4px',
+          zIndex: 100
         }}
       >
         {app.title}
       </div>
 
-      <img
-        src={app.icon}
-        alt={app.title}
-        className={styles.icon}
-        style={{
-          borderRadius: app.id === 'maze' ? '12px' : '0',
-          overflow: app.id === 'maze' ? 'hidden' : 'visible'
-        }}
-        draggable="false"
-      />
-    </div>
+      <motion.div 
+        className={styles.iconWrapper}
+        style={{ width: widthPX, height: widthPX }}
+      >
+        <img
+          src={app.icon}
+          alt={app.title}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: (app.id === 'maze' || app.id === 'calculator' || app.id === 'notes') ? '22%' : '0',
+            overflow: (app.id === 'maze' || app.id === 'calculator' || app.id === 'notes') ? 'hidden' : 'visible',
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+          }}
+          draggable="false"
+        />
+      </motion.div>
 
-    {/* Active Dot */}
-    {useStore((state) => state.openApps.includes(app.id)) && (
-      <div
-        className={styles.activeDot}
-        style={{
-          bottom: -6,
-          left: "50%",
-          transform: "translateX(-50%)",
-          opacity: mouseX === Infinity ? 1 : 0.6
-        }}
-      />
-    )}
-  </div>
-)
+      {isOpen && (
+        <div className={styles.activeDot} />
+      )}
+    </motion.div>
+  )
 }

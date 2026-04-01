@@ -1,195 +1,365 @@
 "use client"
 import { useState } from 'react'
-import useStore from '../store/useStore'
+import { useSystemStore } from '../store/useStore'
+import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
+import { CheckCircle2 } from 'lucide-react'
 
-const wallpapers = [
-  { id: 1, url: '/wallpaper6.png', name: 'Classic Mac' },
-  { id: 2, url: '/wallpaper2.jpg', name: 'Dark Horizon' },
-  { id: 3, url: '/wallpaper8.png', name: 'Buffon Of Vanity' },
-    { id: 4, url: '/wallpaper7.png', name: 'Space Portal' }
-
+/* ─── Sidebar nav items ───────────────────────────────────────── */
+const NAV_ITEMS = [
+  { id: 'wallpaper', label: 'Wallpaper', emoji: '🖥️' },
+  { id: 'appearance', label: 'Appearance', emoji: '🎨' },
 ]
 
-const quizQuestions = [
-  { q: "What happens when you drag a window?", a: "Only updates frame on drag end", icon: "window" },
-  { q: "What is special about the Trash folder?", a: "It contains emotional value", icon: "trash" },
-  { q: "How are apps loaded?", a: "Lazy loading via JS chunks", icon: "package" },
-  { q: "What's the hover preload duration?", a: "300ms", icon: "timer" }
+const ACCENT_COLORS = [
+  { color: '#0071e3', label: 'Blue' },
+  { color: '#BF5AF2', label: 'Purple' },
+  { color: '#FF2D55', label: 'Pink' },
+  { color: '#FF9F0A', label: 'Orange' },
+  { color: '#34C759', label: 'Green' },
+  { color: '#636366', label: 'Graphite' },
 ]
 
+/* ─── Tiny helpers ────────────────────────────────────────────── */
+function SidebarNavItem({ item, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        w-full flex items-center gap-2.5 px-2.5 py-[6px] rounded-[7px]
+        text-[13px] font-[450] tracking-[-0.01em] transition-all duration-150 select-none text-left
+        ${active
+          ? 'bg-[#0071e3] text-white shadow-sm'
+          : 'text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/6'}
+      `}
+    >
+      <span
+        className={`
+          w-[28px] h-[28px] rounded-[7px] flex items-center justify-center shrink-0 text-[14px]
+          ${active ? 'bg-white/20' : 'bg-black/5 dark:bg-white/7'}
+        `}
+      >
+        {item.emoji}
+      </span>
+      {item.label}
+    </button>
+  )
+}
+
+function ToggleSwitch({ on, onToggle }) {
+  return (
+    <button
+      onClick={onToggle}
+      aria-pressed={on}
+      className={`
+        relative w-[36px] h-[22px] rounded-full transition-colors duration-200 flex-shrink-0 focus:outline-none
+        ${on ? 'bg-[#34C759]' : 'bg-black/12 dark:bg-white/15'}
+      `}
+    >
+      <span
+        className={`
+          absolute top-[2px] w-[18px] h-[18px] bg-white rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.22)]
+          transition-transform duration-200 ease-[cubic-bezier(0.34,1.4,0.64,1)]
+          ${on ? 'translate-x-[16px]' : 'translate-x-[2px]'}
+        `}
+      />
+    </button>
+  )
+}
+
+function PreferenceRow({ label, children, divider = true }) {
+  return (
+    <>
+      <div className="flex items-center justify-between py-[10px]">
+        <span className="text-[13px] font-[450] text-[#1d1d1f] dark:text-[#f5f5f7]">{label}</span>
+        {children}
+      </div>
+      {divider && <div className="h-px bg-black/6 dark:bg-white/6 -mx-4" />}
+    </>
+  )
+}
+
+function PreferenceCard({ label, children }) {
+  return (
+    <div className="bg-white dark:bg-[#2c2c2e] border border-black/6 dark:border-white/6 rounded-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.05)] overflow-hidden">
+      {label && (
+        <p className="text-[11px] font-[600] uppercase tracking-[0.03em] text-[#6e6e73] dark:text-[#98989d] px-4 pt-[14px] pb-0">
+          {label}
+        </p>
+      )}
+      <div className="px-4 py-[14px]">{children}</div>
+    </div>
+  )
+}
+
+/* ─── Main component ──────────────────────────────────────────── */
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState('Wallpapers')
-  const [quizScore, setQuizScore] = useState(0)
-  const [quizFinished, setQuizFinished] = useState(false)
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const currentWallpaper = useStore((state) => state.wallpaper)
-  const setWallpaper = useStore((state) => state.setWallpaper)
+  const theme = useSystemStore(state => state.theme)
+  const toggleTheme = useSystemStore(state => state.toggleTheme)
+  const wallpaper = useSystemStore(state => state.wallpaper)
+  const setWallpaper = useSystemStore(state => state.setWallpaper)
+  const [activeTab, setActiveTab] = useState('wallpaper')
+  const [accentColor, setAccentColor] = useState('#0071e3')
+  const [reduceTransparency, setReduceTransparency] = useState(false)
+  const [increaseContrast, setIncreaseContrast] = useState(false)
 
-  const handleQuizAnswer = (isCorrect) => {
-    if (isCorrect) setQuizScore(prev => prev + 25)
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1)
-    } else {
-      setQuizFinished(true)
-    }
-  }
+  const wallpapers = [
+    { id: 1, src: '/wallpaper2.jpg', name: 'Those Eyes' },
+    { id: 2, src: '/wallpaper9.png', name: 'Julius' },
+    { id: 5, src: '/wallpaper7.png', name: 'Space Portal' },
+    { id: 9, src: '/wallpaper6.jpg', name: 'Meowfia' },
+  ]
 
   return (
-    <div className='h-full bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex p-8 gap-8 overflow-auto'>
-      <div className='w-48 flex flex-col gap-2'>
-        <h2 className='text-3xl font-bold mb-6 tracking-tight'>Settings</h2>
-        {['Wallpapers', 'Quiz', 'About'].map(tab => (
-          <div
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`p-3 rounded-xl cursor-default font-medium transition-all transform active:scale-95 ${activeTab === tab ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-zinc-200 dark:hover:bg-zinc-800'}`}
-          >
-            {tab}
-          </div>
-        ))}
+    <div
+      className="flex h-full overflow-hidden select-none"
+      style={{ fontFamily: "-apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif" }}
+    >
 
-        <div className='mt-10 p-4 bg-zinc-200 dark:bg-zinc-800 rounded-2xl flex flex-col gap-2 opacity-80'>
-          <span className='text-[10px] font-bold uppercase text-zinc-500 tracking-widest'>Status</span>
-          <div className='flex items-center gap-2 text-xs'>
-            <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse' />
-            System Optimized
-          </div>
+      {/* ── Sidebar ── */}
+      <aside
+        className="
+          w-[240px] flex-shrink-0 flex flex-col
+          bg-[rgba(255,255,255,0.72)] dark:bg-[rgba(44,44,46,0.85)]
+          border-r border-black/8 dark:border-white/7
+          backdrop-blur-[40px]
+          transition-[background,border-color] duration-300
+        "
+      >
+        {/* Header */}
+        <div className="px-4 pt-5 pb-2 flex-shrink-0">
+          <p className="text-[13px] font-[600] text-[#6e6e73] dark:text-[#98989d] tracking-[0.01em] px-1.5 mb-2">
+            System Settings
+          </p>
+
         </div>
-      </div>
 
-      <div className='flex-1 flex flex-col gap-6 bg-white dark:bg-zinc-950 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-xl'>
-        {activeTab === 'Wallpapers' && (
-          <div className='flex flex-col gap-8'>
-            <h3 className='text-xl font-bold'>Wallpapers</h3>
-            <div className='grid grid-cols-2 gap-4'>
-              {wallpapers.map(wp => (
-                <div key={wp.id} onClick={() => setWallpaper(wp.url)} className='relative flex flex-col gap-2 group cursor-pointer'>
-                  <div className={`aspect-video rounded-xl overflow-hidden border-2 transition-all shadow-lg ${currentWallpaper === wp.url ? 'border-blue-500 ring-2 ring-blue-200' : 'border-transparent group-hover:border-blue-400'}`}>
-                    <img src={wp.url} alt={wp.name} className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500' />
-                    {currentWallpaper === wp.url && (
-                      <div className='absolute top-2 right-2 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold'>Active</div>
-                    )}
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-2 pb-4 scrollbar-none space-y-0.5">
+          <p className="text-[11px] font-[600] uppercase tracking-[0.04em] text-[#aeaeb2] dark:text-[#636366] px-2 pt-3 pb-1">
+            Personalization
+          </p>
+          {NAV_ITEMS.map(item => (
+            <SidebarNavItem
+              key={item.id}
+              item={item}
+              active={activeTab === item.id}
+              onClick={() => setActiveTab(item.id)}
+            />
+          ))}
+        </nav>
+      </aside>
+
+      {/* ── Content ── */}
+      <main className="flex-1 overflow-y-auto bg-[#f5f5f7] dark:bg-[#1c1c1e] transition-[background] duration-300">
+        <div className="max-w-[660px] mx-auto px-9 py-8">
+
+          <AnimatePresence mode="wait">
+
+            {/* ── Appearance ── */}
+            {activeTab === 'appearance' && (
+              <div
+                key="appearance"
+                className="space-y-4"
+              >
+                <h1 className="text-[22px] font-[700] tracking-[-0.025em] text-[#1d1d1f] dark:text-[#f5f5f7] mb-6">
+                  Appearance
+                </h1>
+
+                {/* Theme card */}
+                <PreferenceCard label="Theme">
+                  <div className="grid grid-cols-2 gap-4 pt-1">
+                    {/* Light */}
+                    <div
+                      className="cursor-pointer group"
+                      onClick={() => theme !== 'light' && toggleTheme()}
+                    >
+                      <div
+                        className={`
+                          aspect-[16/10] rounded-[12px] overflow-hidden relative
+                          border-2 transition-all duration-200
+                          shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.06)]
+                          group-hover:scale-[1.01]
+                          ${theme === 'light'
+                            ? 'border-[#0071e3] scale-[1.015] shadow-[0_0_0_3px_rgba(0,113,227,0.18),0_4px_16px_rgba(0,0,0,0.1)]'
+                            : 'border-transparent hover:border-black/15 dark:hover:border-white/15'}
+                        `}
+                      >
+                        {/* Mini light UI */}
+                        <div className="w-full h-full bg-[#F2F2F7] flex items-center justify-center p-3">
+                          <div className="w-full h-[72%] bg-white rounded-[8px] shadow-sm flex gap-[5px] p-2 overflow-hidden">
+                            <div className="w-[28%] bg-[#F8F8F9] rounded-[5px]" />
+                            <div className="flex-1 flex flex-col gap-1 pt-1">
+                              <div className="h-1.5 bg-[#E8E8EC] rounded w-3/4" />
+                              <div className="h-1.5 bg-[#E8E8EC] rounded w-1/2" />
+                            </div>
+                          </div>
+                        </div>
+                        {theme === 'light' && (
+                          <div
+                            className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center shadow-sm"
+                            style={{ background: accentColor }}
+                          >
+                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M1.5 4L3.5 6L8.5 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <p className={`text-center mt-2.5 text-[12px] font-[500] transition-colors ${theme === 'light' ? 'text-[#0071e3]' : 'text-[#6e6e73] dark:text-[#98989d]'}`}>
+                        Light
+                      </p>
+                    </div>
+
+                    {/* Dark */}
+                    <div
+                      className="cursor-pointer group"
+                      onClick={() => theme !== 'dark' && toggleTheme()}
+                    >
+                      <div
+                        className={`
+                          aspect-[16/10] rounded-[12px] overflow-hidden relative
+                          border-2 transition-all duration-200
+                          shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.06)]
+                          group-hover:scale-[1.01]
+                          ${theme === 'dark'
+                            ? 'border-[#0071e3] scale-[1.015] shadow-[0_0_0_3px_rgba(0,113,227,0.18),0_4px_16px_rgba(0,0,0,0.1)]'
+                            : 'border-transparent hover:border-black/15 dark:hover:border-white/15'}
+                        `}
+                      >
+                        {/* Mini dark UI */}
+                        <div className="w-full h-full bg-[#1C1C1E] flex items-center justify-center p-3">
+                          <div className="w-full h-[72%] bg-[#2C2C2E] rounded-[8px] shadow-[0_2px_12px_rgba(0,0,0,0.4)] flex gap-[5px] p-2 overflow-hidden">
+                            <div className="w-[28%] bg-[#3A3A3C] rounded-[5px]" />
+                            <div className="flex-1 flex flex-col gap-1 pt-1">
+                              <div className="h-1.5 bg-[#48484A] rounded w-3/4" />
+                              <div className="h-1.5 bg-[#48484A] rounded w-1/2" />
+                            </div>
+                          </div>
+                        </div>
+                        {theme === 'dark' && (
+                          <div
+                            className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center shadow-sm"
+                            style={{ background: accentColor }}
+                          >
+                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M1.5 4L3.5 6L8.5 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <p className={`text-center mt-2.5 text-[12px] font-[500] transition-colors ${theme === 'dark' ? 'text-[#0071e3]' : 'text-[#6e6e73] dark:text-[#98989d]'}`}>
+                        Dark
+                      </p>
+                    </div>
                   </div>
-                  <span className='text-xs font-semibold text-center'>{wp.name}</span>
-                </div>
-              ))}
-            </div>
-            <div className='p-6 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex flex-col gap-2 mt-4'>
-              <h4 className='text-sm font-bold text-blue-500'>Custom Wallpapers?</h4>
-              <p className='text-xs opacity-70'>You can change wallpapers only in this session. Re-booting resets the dynamic shell context.</p>
-            </div>
-          </div>
-        )}
+                </PreferenceCard>
 
-        {activeTab === 'Quiz' && (
-          <div className='flex flex-col gap-6 items-center justify-center p-8 text-center'>
-            {!quizFinished ? (
-              <>
-                <div className='text-zinc-400 dark:text-zinc-600 mb-8'>
-                  <svg
-                    className="w-16 h-16 mx-auto"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <>
-                      {quizQuestions[currentQuestion].icon === 'window' && (
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                      )}
 
-                      {quizQuestions[currentQuestion].icon === 'trash' && (
-                        <>
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                        </>
-                      )}
-
-                      {quizQuestions[currentQuestion].icon === 'package' && (
-                        <>
-                          <line x1="16.5" y1="9.4" x2="7.5" y2="4.28" />
-                          <polyline points="3.29 7 12 12 20.71 7" />
-                          <line x1="12" y1="22.08" x2="12" y2="12" />
-                          <polyline points="21 7 21 17 12 22 3 17 3 7 12 2 21 7" />
-                        </>
-                      )}
-
-                      {quizQuestions[currentQuestion].icon === 'timer' && (
-                        <>
-                          <circle cx="12" cy="12" r="10" />
-                          <polyline points="12 6 12 12 16 14" />
-                        </>
-                      )}
-                    </>
-                  </svg>
-                </div>
-                <h3 className='text-2xl font-bold mb-4 tracking-tight'>{quizQuestions[currentQuestion].q}</h3>
-                <div className='grid grid-cols-1 gap-3 w-full max-w-sm'>
-                  <button onClick={() => handleQuizAnswer(true)} className='p-4 bg-zinc-100 dark:bg-zinc-900 hover:bg-blue-500 hover:text-white rounded-2xl font-medium transition-all border border-zinc-200 dark:border-zinc-800 shadow-sm'>{quizQuestions[currentQuestion].a}</button>
-                  <button onClick={() => handleQuizAnswer(false)} className='p-4 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-500 hover:text-white rounded-2xl font-medium transition-all border border-zinc-200 dark:border-zinc-800 shadow-sm'>Something else</button>
-                </div>
-                <p className='text-[10px] text-zinc-500 mt-8 uppercase tracking-[0.2em] font-bold'>Questions: {currentQuestion + 1} of {quizQuestions.length}</p>
-              </>
-            ) : (
-              <div className='flex flex-col gap-6 animate-in fade-in zoom-in duration-500 items-center'>
-                <div className='w-24 h-24 shadow-2xl bg-zinc-100 dark:bg-zinc-800 rounded-full mb-4 flex items-center justify-center text-blue-500'>
-                  {quizScore >= 75 ? (
-                    <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 13l4 4L19 7" /></svg>
-                  ) : (
-                    <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
-                  )}
-                </div>
-                <h3 className='text-4xl font-black'>Score: {quizScore}%</h3>
-                <p className='text-sm opacity-70 max-w-xs'>
-                  {quizScore >= 75 ? "Excellent! You truly mastered the portfolio. A hidden maze feature is teased for you in the Maze game!" : "Not bad, but keep exploring. Scores 75%+ get a special tease."}
-                </p>
-                <button onClick={() => { setQuizFinished(false); setQuizScore(0); setCurrentQuestion(0); }} className='px-10 py-3 bg-zinc-900 dark:bg-white text-white dark:text-black font-bold rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all mt-4'>Retry Quiz</button>
               </div>
             )}
-          </div>
-        )}
 
-        {activeTab === 'About' && (
-          <div className='flex flex-col gap-6 p-8 h-full overflow-auto'>
-            <h3 className='text-xl font-bold'>Engineer Profile</h3>
-            <div className='flex flex-col gap-4 text-sm'>
-              <div className='flex justify-between border-b dark:border-white/5 pb-3'>
-                <span className='opacity-60'>Education</span><span className='font-bold text-blue-500'>B.Tech CSE @ Sandip Uni</span>
-              </div>
-              <div className='flex justify-between border-b dark:border-white/5 pb-3'>
-                <span className='opacity-60'>Current GPA</span><span className='font-bold text-emerald-500'>8.50 / 10.0</span>
-              </div>
-              <div className='flex justify-between border-b dark:border-white/5 pb-3'>
-                <span className='opacity-60'>Expertise</span><span className='font-bold text-purple-500'>Distributed Systems</span>
-              </div>
-              <div className='flex justify-between border-b dark:border-white/5 pb-3'>
-                <span className='opacity-60'>Competitive</span><span className='font-bold text-orange-500'>Codeforces Specialist</span>
-              </div>
-            </div>
+            {/* ── Wallpaper ── */}
+            {activeTab === 'wallpaper' && (
+              <div
+                key="wallpaper"
+                className="space-y-4"
+              >
+                <h1 className="text-[22px] font-[700] tracking-[-0.025em] text-[#1d1d1f] dark:text-[#f5f5f7] mb-6">
+                  Wallpaper
+                </h1>
 
-            <div className='mt-4 flex flex-col gap-3'>
-               <h4 className='text-xs font-bold uppercase tracking-widest text-zinc-500'>Recent Successes</h4>
-               <div className='flex flex-wrap gap-2'>
-                  {['SIH Winner', 'Kumbhathon Winner', 'SunHacks Winner'].map(tag => (
-                    <span key={tag} className='px-3 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-[10px] font-bold border dark:border-white/5'>{tag}</span>
-                  ))}
-               </div>
-            </div>
+                {/* Preview */}
+                <div className="flex flex-col items-center mb-2">
+                  <div
+                    className="
+                      w-full max-w-[420px] aspect-[16/10] rounded-[16px] overflow-hidden relative
+                      shadow-[0_2px_8px_rgba(0,0,0,0.12),0_8px_30px_rgba(0,0,0,0.12)]
+                      border border-black/10 dark:border-white/10
+                    "
+                  >
+                    <Image
+                      key={wallpaper}
+                      src={wallpaper}
+                      fill
+                      className="object-cover"
+                      alt="Current Wallpaper"
+                    />
+                    {/* Menu bar */}
+                    <div className="absolute top-0 left-0 right-0 h-[22px] bg-black/35 backdrop-blur-[12px] flex items-center px-2.5 gap-1.5">
+                      <div className="w-[9px] h-[9px] rounded-full bg-[#FF5F57]" />
+                      <div className="w-[9px] h-[9px] rounded-full bg-[#FEBC2E]" />
+                      <div className="w-[9px] h-[9px] rounded-full bg-[#28C840]" />
+                    </div>
+                    {/* Dock */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-[20px] border border-white/25 rounded-[12px] px-2 py-1.5 flex gap-1.5 shadow-lg">
+                      <div className="w-6 h-6 bg-white/30 rounded-[6px]" />
+                      <div className="w-6 h-6 bg-white/30 rounded-[6px]" />
+                      <div className="w-6 h-6 bg-white/30 rounded-[6px]" />
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-[#aeaeb2] dark:text-[#636366] mt-3">Current Wallpaper</p>
+                </div>
 
-            <div className='mt-8 bg-zinc-100 dark:bg-zinc-900/50 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 text-center flex flex-col gap-4 group transition-shadow hover:shadow-xl'>
-              <div className='w-16 h-16 mx-auto mb-2 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform'>
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                {/* Gallery card */}
+                <PreferenceCard label="Gallery">
+                  <div className="grid grid-cols-4 gap-3 pt-1">
+                    {wallpapers.map(wp => (
+                      <div
+                        key={wp.id}
+                        className="cursor-pointer group"
+                        onClick={() => setWallpaper(wp.src)}
+                      >
+                        <div
+                          className={`
+                            aspect-square rounded-[10px] overflow-hidden relative
+                            border-2 transition-all duration-200
+                            shadow-[0_2px_8px_rgba(0,0,0,0.14)]
+                            group-hover:scale-[1.04]
+                            ${wallpaper === wp.src
+                              ? 'border-[#0071e3] scale-[1.02] shadow-[0_0_0_3px_rgba(0,113,227,0.2),0_2px_8px_rgba(0,0,0,0.14)]'
+                              : 'border-transparent'}
+                          `}
+                        >
+                          <Image
+                            src={wp.src}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            alt={wp.name}
+                          />
+                          {wallpaper === wp.src && (
+                            <div className="absolute inset-0 bg-black/25 flex items-center justify-center rounded-[8px]">
+                              <div
+                                className="w-[22px] h-[22px] rounded-full flex items-center justify-center shadow-sm"
+                                style={{ background: accentColor }}
+                              >
+                                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                  <path d="M1.5 4L3.5 6L8.5 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <p
+                          className={`
+                            text-center mt-2 text-[11px] font-[500] transition-colors
+                            ${wallpaper === wp.src
+                              ? 'text-[#0071e3] font-[600]'
+                              : 'text-[#6e6e73] dark:text-[#98989d]'}
+                          `}
+                        >
+                          {wp.name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </PreferenceCard>
               </div>
-              <div>
-                <h4 className='text-lg font-bold'>Shivraj Pawar</h4>
-                <p className='text-xs opacity-60 italic mt-1'>Backend Engineer | Architecting Distributed Financial & Time Systems</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+            )}
+
+          </AnimatePresence>
+        </div>
+      </main>
     </div>
   )
 }

@@ -24,9 +24,9 @@ export default function BootLoader({ onFinish }) {
                 duration: 0.8,
                 ease: "power2.inOut"
             })
-            .to(loaderRef.current, {
+            .set(loaderRef.current, {
                 opacity: 0,
-                duration: 0.2
+                onComplete: () => onFinish()
             });
 
     }, []);

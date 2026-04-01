@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
+import { useWindowStore } from '../store/useStore'
 
 const BASIC_BUTTONS = [
   ['AC', '+/-', '%', '/'],
@@ -26,6 +27,15 @@ export default function Calculator() {
   const [isAdvanced, setIsAdvanced] = useState(false)
   const [memory, setMemory] = useState(0)
   const [is2nd, setIs2nd] = useState(false)
+  const updateAppPosition = useWindowStore((state) => state.updateAppPosition)
+
+  // Dynamic window resizing when switching to Scientific mode
+  useEffect(() => {
+    updateAppPosition('calculator', { 
+      width: isAdvanced ? 480 : 280, 
+      height: isAdvanced ? 400 : 400 
+    })
+  }, [isAdvanced, updateAppPosition])
 
   const handleNumber = useCallback((n) => {
     if (waitingForOperand) {
@@ -41,6 +51,16 @@ export default function Calculator() {
     if (!display.includes('.')) setDisplay(display + '.')
   }, [display, waitingForOperand])
 
+  const compute = (a, b, op) => {
+    switch(op) {
+      case '+': return a + b
+      case '-': return a - b
+      case 'x': return a * b
+      case '/': return b === 0 ? 'Error' : a / b
+      default: return b
+    }
+  }
+
   const handleOperator = useCallback((op) => {
     const current = parseFloat(display)
     if (prevValue !== null && !waitingForOperand) {
@@ -54,16 +74,6 @@ export default function Calculator() {
     setExpression(display + ' ' + op)
     setWaitingForOperand(true)
   }, [display, prevValue, operator, waitingForOperand])
-
-  const compute = (a, b, op) => {
-    switch(op) {
-      case '+': return a + b
-      case '-': return a - b
-      case 'x': return a * b
-      case '/': return b === 0 ? 'Error' : a / b
-      default: return b
-    }
-  }
 
   const calculate = useCallback(() => {
     if (operator === null || waitingForOperand) return
@@ -150,7 +160,6 @@ export default function Calculator() {
     else handleNumber(btn)
   }
 
-  // Format display to avoid overflow
   const formatDisplay = (val) => {
     if (isNaN(parseFloat(val))) return val
     if (val.length > 9) return parseFloat(val).toExponential(3)
@@ -159,11 +168,8 @@ export default function Calculator() {
 
   return (
     <div
-      className="bg-[#1c1c1e] text-white flex flex-col select-none overflow-hidden"
+      className="bg-[#1c1c1e] text-white flex flex-col select-none overflow-hidden h-full w-full"
       style={{
-        width: isAdvanced ? 480 : 280,
-        height: isAdvanced ? 400 : 400,
-        transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
         borderRadius: 0,
         fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif',
       }}
