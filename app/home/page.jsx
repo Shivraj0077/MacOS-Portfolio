@@ -79,7 +79,12 @@ export default function Home({ isLoaded }) {
       className="relative w-full h-screen overflow-hidden select-none bg-black"
       style={{ width: winWidth, height: winHeight }}
     >
-      <div className="absolute inset-0 z-0 bg-black">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoaded ? 1 : 0 }}
+        transition={{ duration: 0.1 }}
+        className="absolute inset-0 z-0 bg-black"
+      >
         {wallpaper && wallpaper !== "" ? (
           <Image 
             key={wallpaper}
@@ -95,7 +100,7 @@ export default function Home({ isLoaded }) {
         ) : (
           <div className="absolute inset-0 bg-zinc-950" />   // solid fallback background
         )}
-      </div>
+      </motion.div>
 
       <Spotlight key={isSpotlightOpen ? "open" : "closed"} isOpen={isSpotlightOpen} onClose={() => setIsSpotlightOpen(false)} />
       <ControlCenter isOpen={isControlCenterOpen} onClose={() => setIsControlCenterOpen(false)} />

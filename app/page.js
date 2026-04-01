@@ -4,12 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BootLoader from "./components/bootloader/page";
 import Home from "./home/page";
+import Preloader from "./components/Preloader";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
 
   return (
     <div className="bg-black w-screen h-screen overflow-hidden select-none relative">
+      <Preloader />
       {/* Pre-load Home behind the loader */}
       <Home isLoaded={loaded} />
       
