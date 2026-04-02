@@ -240,14 +240,6 @@ export default function Notes() {
                 <StickyNote className="w-4 h-4 text-orange-500" />
                 Notes
              </div>
-             <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium text-zinc-500 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">
-                <Folder className="w-4 h-4 text-zinc-400" />
-                Drafts
-             </div>
-             <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium text-zinc-500 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">
-                <Trash2 className="w-4 h-4 text-zinc-400" />
-                Recently Deleted
-             </div>
           </div>
         </div>
       </div>

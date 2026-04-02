@@ -1,95 +1,181 @@
 "use client"
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Trash2, FileText, ChevronDown, ChevronRight, Lightbulb, Trash, Info, Sparkles } from 'lucide-react'
 
-const trashFiles = [
-  { id: 'sleep', name: 'sleep_schedule.txt', content: 'Planned sleep: 11:00 PM\nActual sleep: when the bug fixes itself\n\nDay 1: I\'ll sleep early\nDay 2: debugging\nDay 3: debugging the debugging' },
-  { id: 'final', name: 'final_final_version.js', content: 'final.js\nfinal_v2.js\nfinal_final.js\nfinal_final_REAL.js\nfinal_final_REAL_last.js\n\nNote: These files were sacrificed during development.' },
-  { id: 'works', name: 'works_on_my_machine.txt', content: 'Bug report: "App crashes."\n\nDeveloper response:\nWorks on my machine.' },
-  { id: 'console', name: 'console_log_collection.txt', content: 'console.log("why");\nconsole.log("why is this happening");\nconsole.log("WHAT IS THIS");\nconsole.log("ok it works now");' },
-  { id: 'ideas', name: 'startup_ideas_3am.txt', content: 'Uber for programmers\nAI that writes my code\nAI that debugs my code\nAI that explains my code\nAI that apologizes for my code' },
-  { id: 'temp', name: 'temporary_fix.js', content: '// TODO: fix properly later\nif(true){\n   runEverything()\n}\n\nNote: This fix survived production for 6 months.' },
-  { id: 'motivation', name: 'motivation.txt', content: 'I will code for 2 hours today.\n\n12 hours later:\nstill debugging.' },
-  { id: 'stackoverflow', name: 'stack_overflow_history.txt', content: 'Search #1: javascript array remove item\nSearch #2: why is my code broken\nSearch #3: how to center div\nSearch #4: how to center div again\nSearch #5: why CSS hates me' },
-  { id: 'meeting', name: 'meeting_notes.txt', content: 'Meeting Agenda:\n\n• Discuss architecture\n• Agree on architecture\n• Ignore architecture\n• Rewrite everything' },
-  { id: 'bug', name: 'bug_that_fixed_itself.txt', content: 'Bug existed yesterday.\n\nToday it works.\n\nNo one touched the code.\n\nWe move on and never speak of it again.' }
+const trashItems = [
+  "your attention span",
+  "the trip you planned with your friends",
+  "your new year resolution",
+  "song overplayed",
+  "that dress you saw in that shop",
+  "the book in the shelf you havent completed",
+  "your diet plan",
+  "The shower thought that sounded Nobel Prize-worthy",
+  "the pet you wanted to adopt",
+  "Your sense of direction without maps"
+]
+
+const startupIdeas = [
+  "Dating app with let matches go on dates by subscribers money",
+  "OAuth system with ai based security",
+  "Cloud drive peer to peer system",
+  "Ai powered news platform",
 ]
 
 export default function Bin() {
-  const [selectedFile, setSelectedFile] = useState(null)
+  const [showIdeas, setShowIdeas] = useState(false)
   const [alert, setAlert] = useState(null)
 
   const emptyTrash = () => {
-    setAlert({ title: 'Error: Permission denied.', message: 'Developer attached emotional value to these files.' })
+    setAlert({ 
+      title: 'Failed to empty Trash', 
+      message: 'The items in this folder have been flagged as "Emotional Baggage" and cannot be deleted at this time. Please contact your therapist for more information.' 
+    })
   }
 
   return (
-    <div className='flex h-full bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200'>
-      {/* Sidebar */}
-      <div className='w-48 bg-zinc-100/50 dark:bg-zinc-900/50 border-r border-zinc-200 dark:border-zinc-800 p-4'>
-        <div className='text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4'>Trash</div>
-        <div className='flex flex-col gap-1'>
-          {trashFiles.map(file => (
-            <div 
-              key={file.id} 
-              onClick={() => setSelectedFile(file)}
-              className={`text-xs p-2 rounded cursor-pointer transition-colors ${selectedFile?.id === file.id ? 'bg-blue-500 text-white' : 'hover:bg-zinc-200 dark:hover:bg-zinc-800'}`}
-            >
-              {file.name}
-            </div>
-          ))}
+    <div className='h-full bg-[#f5f5f7] dark:bg-[#1c1c1e] text-[#1d1d1f] dark:text-[#f5f5f7] overflow-auto select-none font-sans'>
+      <div className='max-w-[720px] mx-auto px-6 py-10'>
+        
+        {/* Apple-style Header */}
+        <div className='mb-10 flex items-center justify-between'>
+           <div className='flex items-center gap-5'>
+             <div className='w-14 h-14 rounded-[18px] bg-white dark:bg-[#2c2c2e] border border-black/5 dark:border-white/10 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]'>
+               <Trash2 className='w-7 h-7 text-[#ff3b30]' />
+             </div>
+             <div>
+               <h1 className='text-[24px] font-[700] tracking-tight'>Trash</h1>
+               <div className='flex items-center gap-2 mt-0.5 text-[#86868b] dark:text-[#98989d] text-[13px] font-[450]'>
+               </div>
+             </div>
+           </div>
+           
+           <button 
+             onClick={emptyTrash}
+             className='px-5 py-2.5 bg-white dark:bg-[#2c2c2e] hover:bg-[#fafafa] dark:hover:bg-[#3a3a3c] text-[#ff3b30] rounded-full text-[13px] font-[600] border border-black/5 dark:border-white/10 shadow-sm transition-all active:scale-95'
+           >
+             Empty Trash
+           </button>
         </div>
-        <button 
-          onClick={emptyTrash}
-          className='mt-10 w-full text-center text-xs font-semibold py-2 px-4 rounded bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors'
-        >
-          Empty Trash
-        </button>
+
+        {/* Content Card Section */}
+        <div className='bg-white dark:bg-[#2c2c2e] border border-black/5 dark:border-white/10 rounded-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden'>
+          
+          <div className='p-1'>
+            {trashItems.map((item, index) => (
+              <div 
+                key={index}
+                className={`
+                  group flex items-center justify-between px-5 py-[14px] transition-colors
+                  ${index !== trashItems.length - 1 ? 'border-b border-black/5 dark:border-white/5' : ''}
+                  hover:bg-black/5 dark:hover:bg-white/5
+                `}
+              >
+                <div className='flex items-center gap-4'>
+                  <div className='w-9 h-9 rounded-[10px] bg-[#0071e3]/10 flex items-center justify-center'>
+                    <FileText className='w-5 h-5 text-[#0071e3]' />
+                  </div>
+                  <div className='flex flex-col'>
+                    <span className='text-[14px] font-[500] leading-tight capitalize'>{item}</span>
+                  </div>
+                </div>
+                <div className='opacity-0 group-hover:opacity-100 transition-opacity pr-2'>
+                  <Info className='w-4 h-4 text-[#aeaeb2]' />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Projects Section - Settings Inspired Title Style */}
+        <p className="text-[11px] font-[600] uppercase tracking-[0.05em] text-[#86868b] dark:text-[#98989d] px-1 mt-8 mb-3">
+          Legacy Projects
+        </p>
+
+        <div className='bg-white dark:bg-[#2c2c2e] border border-black/5 dark:border-white/10 rounded-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden'>
+          <div 
+            onClick={() => setShowIdeas(!showIdeas)}
+            className={`
+              cursor-pointer flex items-center justify-between px-5 py-[16px] transition-all hover:bg-black/5 dark:hover:bg-white/5
+              ${showIdeas ? 'bg-[#0071e3]/5 dark:bg-[#0071e3]/10' : ''}
+            `}
+          >
+            <div className='flex items-center gap-5'>
+              <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shadow-sm transition-colors ${showIdeas ? 'bg-[#0071e3] text-white' : 'bg-[#5856d6]/10 text-[#5856d6]'}`}>
+                <Lightbulb className='w-5 h-5' />
+              </div>
+              <div className='flex flex-col'>
+                <span className='text-[15px] font-[600] tracking-tight'>Abandoned Project Ideas</span>
+              </div>
+            </div>
+            <div className='flex items-center gap-3 pr-2'>
+               {showIdeas ? <ChevronDown className='w-5 h-5 text-[#aeaeb2]' /> : <ChevronRight className='w-5 h-5 text-[#aeaeb2]' />}
+            </div>
+          </div>
+
+          {/* Sub-Rows with Framer Motion Animation */}
+          <AnimatePresence>
+            {showIdeas && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden border-t border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]"
+              >
+                {startupIdeas.map((idea, index) => (
+                  <motion.div 
+                    key={`idea-${index}`}
+                    initial={{ x: -10, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    className='flex items-center gap-5 px-6 py-4 border-b border-black/5 dark:border-white/5 last:border-0'
+                  >
+                    <div className='w-2 h-2 rounded-full bg-[#0071e3] shadow-[0_0_8px_rgba(0,113,227,0.4)] flex-shrink-0' />
+                    <div className='flex flex-col'>
+                      <span className='text-[13px] font-[500] leading-relaxed italic opacity-85'>{idea}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className='flex-1 flex flex-col'>
-        {selectedFile ? (
-          <div className='p-8 flex flex-col gap-4'>
-            <div className='flex items-center justify-between'>
-              <h2 className='text-xl font-bold'>{selectedFile.name}</h2>
-              <span className='text-[10px] uppercase font-bold text-zinc-500'>Sacrificed File</span>
-            </div>
-            <pre className='bg-zinc-100 dark:bg-zinc-950 p-6 rounded-lg font-mono text-sm leading-relaxed whitespace-pre-wrap border border-zinc-200 dark:border-zinc-800'>
-              {selectedFile.content}
-            </pre>
-          </div>
-        ) : (
-          <div className='flex-1 flex items-center justify-center flex-col gap-4 opacity-40'>
-            <div className='w-24 h-24 bg-zinc-200 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-400 dark:text-zinc-600'>
-                <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            </div>
-            <div className='flex flex-col items-center gap-1'>
-              <span className='font-bold text-lg'>Trash Items</span>
-              <span className='text-sm'>Select a file to view its history</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Custom Alert */}
-      {alert && (
-        <div className='fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000] flex items-center justify-center p-4'>
-          <div className='bg-white dark:bg-zinc-900 border border-white/20 shadow-2xl rounded-2xl w-full max-w-sm p-6 flex flex-col gap-4 transform '>
-            <div className='flex flex-col gap-1 text-center'>
-              <h3 className='text-lg font-bold text-red-500'>{alert.title}</h3>
-              <p className='text-sm opacity-70'>{alert.message}</p>
-            </div>
-            <div className='flex justify-center mt-2'>
+      {/* Persistence Prohibited Alert - MacOS Style */}
+      <AnimatePresence>
+        {alert && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className='fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-6'
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className='bg-[#ffffffdd] dark:bg-[#2c2c2edd] backdrop-blur-2xl border border-white/20 dark:border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)] rounded-[24px] w-full max-w-[320px] p-8 flex flex-col items-center gap-6'
+            >
+              <div className='w-16 h-16 rounded-[14px] bg-[#ff3b30]/10 flex items-center justify-center'>
+                <Trash2 className='w-8 h-8 text-[#ff3b30]' />
+              </div>
+              <div className='flex flex-col gap-2 text-center'>
+                <h3 className='text-[18px] font-[700] tracking-tight'>Failed to Empty</h3>
+                <p className='text-[13px] text-[#6e6e73] dark:text-[#98989d] font-[450] leading-[1.4]'>{alert.message}</p>
+              </div>
               <button 
                 onClick={() => setAlert(null)}
-                className='px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors'
+                className='w-full py-2.5 bg-[#0071e3] hover:bg-[#0077ed] text-white rounded-[10px] font-[600] text-[13px] shadow-[0_2px_8px_rgba(0,113,227,0.3)] transition-all active:scale-[0.98]'
               >
                 Done
               </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

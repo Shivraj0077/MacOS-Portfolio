@@ -277,7 +277,7 @@ export default function MazeGame() {
 
             <button
               onClick={resetGame}
-              className="mt-10 w-full py-3.5 flex items-center justify-center gap-2.5 rounded-2xl bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] text-sm font-medium active:scale-[0.98] transition-all border border-[#e5e5ea] dark:border-[#3a3a3c]"
+              className="mt-10 w-full py-3.5 flex items-center justify-center gap-2.5 rounded-2xl bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] text-sm font-medium text-[#1c1c1e] dark:text-white active:scale-[0.98] transition-all border border-[#e5e5ea] dark:border-[#3a3a3c]"
             >
               <RotateCcw className="w-4 h-4" />
               New Maze

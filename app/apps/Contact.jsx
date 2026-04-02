@@ -33,7 +33,7 @@ export default function Contact() {
         setSent(false)
         e.target.reset()
       }, 3000)
-    }, 800)
+    }, 1500)
   }
 
   const copyEmail = async () => {
@@ -142,7 +142,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting || sent}
-                className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+                className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
               >
                 {isSubmitting ? (
                   <>
@@ -152,13 +152,12 @@ export default function Contact() {
                 ) : sent ? (
                   <>
                     <Check className="w-4 h-4" />
-                    <span>Message Sent!</span>
+                    <span>Sent Successfully!</span>
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    <span>Send Message</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>Send</span>
                   </>
                 )}
               </button>
