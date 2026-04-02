@@ -158,11 +158,10 @@ export default function Finder() {
       { id: 'intern', name: 'Internships.doc', type: 'document', icon: '/file.svg' },
     ],
     Projects: [
-      { id: 'p1', name: 'WeLoveWeb', type: 'project', icon: '/globe.svg' },
-      { id: 'p2', name: 'DarkModeToggle', type: 'project', icon: '/globe.svg' },
-      { id: 'p3', name: 'VolumeControl', type: 'project', icon: '/globe.svg' },
-      { id: 'p4', name: 'SpeedScanner', type: 'project', icon: '/globe.svg' },
-      { id: 'p5', name: 'UbuntuOS', type: 'project', icon: '/globe.svg' },
+      { id: 'p1', name: 'Payment Gateway System', type: 'project', icon: '/globe.svg' },
+      { id: 'p2', name: 'Scheduling app', type: 'project', icon: '/globe.svg' },
+      { id: 'p3', name: 'Ai interview system', type: 'project', icon: '/globe.svg' },
+      { id: 'p4', name: 'MacOS Portfolio', type: 'project', icon: '/globe.svg' },
     ]
   }
 

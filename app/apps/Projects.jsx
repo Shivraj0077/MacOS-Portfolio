@@ -4,10 +4,10 @@ import Image from "next/image"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
 import { 
-  ExternalLink, Star, Code, 
+  ExternalLink, Code, 
   Cpu, Zap, 
   Sparkles, ArrowUpRight, Clock,
-  Layers, GitBranch, Award, ChevronRight
+  Layers, Award, ChevronRight
 } from "lucide-react"
 
 const Github = (props) => (
@@ -138,12 +138,16 @@ export default function Projects() {
                     
                     <div className="flex items-center gap-5 pt-2">
                        <div className="flex items-center gap-1.5">
-                          <Star className="w-4 h-4 text-[#8e8e93]" />
-                          <span className="text-sm font-medium text-[#1c1c1e] dark:text-white">{project.stats.stars}</span>
+                          <Zap className="w-4 h-4 text-[#ff9f0a]" />
+                          <span className="text-[13px] font-[600] text-[#1c1c1e] dark:text-white uppercase tracking-tight">
+                            {project.metrics[0]}
+                          </span>
                        </div>
                        <div className="flex items-center gap-1.5">
-                          <GitBranch className="w-4 h-4 text-[#8e8e93]" />
-                          <span className="text-sm font-medium text-[#1c1c1e] dark:text-white">{project.stats.commits}</span>
+                          <Layers className="w-4 h-4 text-[#5856D6]" />
+                          <span className="text-[13px] font-[600] text-[#1c1c1e] dark:text-white uppercase tracking-tight">
+                            {project.metrics[1]}
+                          </span>
                        </div>
                        
                        <div className="ml-auto">
