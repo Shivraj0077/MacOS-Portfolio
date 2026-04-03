@@ -17,13 +17,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Mac Portfolio",
-  description: "A high-performance, macOS-inspired desktop environment portfolio",
+  metadataBase: new URL('https://shivraj7.vercel.app'), // Replace with your actual domain
+  title: "MacOS Portfolio",
+  description: "A high-performance, macOS-inspired portfolio",
   openGraph: {
-    images: ["/mac-portfolio.png"],
+    title: "MacOS Portfolio",
+    description: "A high-performance, macOS-inspired portfolio",
+    images: [
+      {
+        url: "/mac-portfolio.png",
+        width: 1200,
+        height: 630,
+        alt: "Mac Portfolio Preview",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    title: "MacOS Portfolio",
+    description: "A high-performance, macOS-inspired portfolio",
     images: ["/mac-portfolio.png"],
   },
 };
