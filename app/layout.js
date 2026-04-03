@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://shivraj7.vercel.app'), // Replace with your actual domain
+  metadataBase: new URL('https://shivraj7.vercel.app'), 
   title: "MacOS Portfolio",
   description: "A high-performance, macOS-inspired portfolio",
   openGraph: {
@@ -25,7 +25,7 @@ export const metadata = {
     description: "A high-performance, macOS-inspired portfolio",
     images: [
       {
-        url: "/mac-portfolio.png",
+        url: "https://shivraj7.vercel.app/mac-portfolio.png",
         width: 1200,
         height: 630,
         alt: "Mac Portfolio Preview",
