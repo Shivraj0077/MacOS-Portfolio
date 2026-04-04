@@ -17,12 +17,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://shivraj7.vercel.app'), 
+  metadataBase: new URL('https://shivraj7.vercel.app'),
   title: "MacOS Portfolio",
   description: "A high-performance, macOS-inspired portfolio",
   openGraph: {
     title: "MacOS Portfolio",
     description: "A high-performance, macOS-inspired portfolio",
+    url: "https://shivraj7.vercel.app",   // REQUIRED
+    siteName: "Shivraj Portfolio",
+    type: "website",                      // REQUIRED
     images: [
       {
         url: "https://shivraj7.vercel.app/mac-portfolio.png",
@@ -32,13 +35,7 @@ export const metadata = {
       },
     ],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "MacOS Portfolio",
-    description: "A high-performance, macOS-inspired portfolio",
-    images: ["/mac-portfolio.png"],
-  },
-};
+}
 
 export default function RootLayout({ children }) {
   return (
