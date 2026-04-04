@@ -28,7 +28,7 @@ export const metadata = {
     type: "website",                      // REQUIRED
     images: [
       {
-        url: "https://shivraj7.vercel.app/mac-portfolio.png",
+        url: "https://shivraj7.vercel.app/mac-portfolio.jpeg",
         width: 1200,
         height: 630,
         alt: "Mac Portfolio Preview",
