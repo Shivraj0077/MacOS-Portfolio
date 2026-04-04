@@ -23,19 +23,26 @@ export const metadata = {
   openGraph: {
     title: "MacOS Portfolio",
     description: "A high-performance, macOS-inspired portfolio",
-    url: "https://shivraj7.vercel.app",   // REQUIRED
+    url: "https://shivraj7.vercel.app",
     siteName: "Shivraj Portfolio",
-    type: "website",                      // REQUIRED
     images: [
       {
-        url: "https://shivraj7.vercel.app/mac-portfolio.jpeg",
+        url: "/mac-portfolio.jpeg",
         width: 1200,
         height: 630,
-        alt: "Mac Portfolio Preview",
+        alt: "MacOS Portfolio Preview",
       },
     ],
+    locale: "en_US",
+    type: "website",
   },
-}
+  twitter: {
+    card: "summary_large_image",
+    title: "MacOS Portfolio",
+    description: "A high-performance, macOS-inspired portfolio",
+    images: ["/mac-portfolio.jpeg"],
+  },
+};
 
 export default function RootLayout({ children }) {
   return (
