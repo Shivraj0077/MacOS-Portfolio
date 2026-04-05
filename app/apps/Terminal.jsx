@@ -5,7 +5,7 @@ import useStore from '../store/useStore'
 export default function Terminal() {
   const { openApp } = useStore()
   const [history, setHistory] = useState([
-    { type: 'output', content: 'Welcome to ShivrajOS Terminal v2.4.0 (ttys001).\nFor a list of all commands, type &quot;help&quot;' }
+    { type: 'output', content: 'Welcome to ShivrajOS Terminal v2.4.0 (ttys001).\nFor a list of all commands, type "help"' }
   ])
   const [input, setInput] = useState('')
   const [commandHistory, setCommandHistory] = useState([])
