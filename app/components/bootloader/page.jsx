@@ -36,7 +36,7 @@ export default function BootLoader({ onFinish }) {
             ref={loaderRef}
             className="fixed inset-0 flex flex-col items-center justify-center bg-black text-white"
         >
-            <Image src="/apple-logo.svg" width={200} height={200} alt="mac-os-logo" />
+            <Image src="/apple-logo.svg" width={200} height={200} alt="mac-os-logo" priority={true} fetchPriority="high" />
             <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-64 h-2 bg-gray-700 rounded">
                 <div
                     ref={progressRef}

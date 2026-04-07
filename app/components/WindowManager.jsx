@@ -27,7 +27,15 @@ export default function WindowManager() {
             app={app} 
             isActive={activeApp === appId}
           >
-            <AppComponent />
+            <ErrorBoundary>
+              <Suspense fallback={
+                <div className="flex items-center justify-center w-full h-full bg-white/50 dark:bg-black/50 backdrop-blur-md">
+                   <div className="w-8 h-8 border-2 border-zinc-400 dark:border-zinc-600 border-t-transparent rounded-full animate-spin" />
+                </div>
+              }>
+                <AppComponent />
+              </Suspense>
+            </ErrorBoundary>
           </Window>
         )
       })}

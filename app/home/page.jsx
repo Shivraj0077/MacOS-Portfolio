@@ -33,8 +33,11 @@ export default function Home({ isLoaded }) {
 
   useEffect(() => {
     setMounted(true)
-    if (isLoaded) setHasPlayedEntrance(true)
-  }, [isLoaded])
+  }, [])
+
+  if (isLoaded && !hasPlayedEntrance) {
+    setHasPlayedEntrance(true)
+  }
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -89,9 +92,10 @@ export default function Home({ isLoaded }) {
           <Image 
             key={wallpaper}
             src={wallpaper}
-            alt="Desktop Wallpaper"
+            alt="Desktop wallpaper with macOS style colors"
             fill 
             priority 
+            quality={65}
             className="object-cover pointer-events-none select-none"
             onError={(e) => {
               e.currentTarget.src = "/wallpaper2.jpg"; // fallback image
@@ -114,8 +118,14 @@ export default function Home({ isLoaded }) {
           className="absolute top-0 w-full h-[30px] bg-white/10 dark:bg-black/20 backdrop-blur-3xl border-b border-white/5 z-[10000] flex items-center px-4 justify-between text-white text-[12px] font-bold tracking-tight shadow-sm"
         >
           <div className="flex gap-4 items-center h-full">
-            <div className="hover:bg-white/15 px-2 rounded-md transition-colors cursor-default py-1">
-              <img src="/apple-logo.svg" alt="apple" className="w-[14px] h-[14px] invert" />
+            <div 
+              role="button"
+              tabIndex={0}
+              aria-label="Apple Menu"
+              className="hover:bg-white/15 px-2 rounded-md transition-colors cursor-default py-1"
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.preventDefault() }}
+            >
+              <Image src="/apple-logo.svg" alt="apple" width={14} height={14} className="w-[14px] h-[14px] invert" />
             </div>
             <span className="px-2 rounded-md hover:bg-white/15 py-1 cursor-default transition-colors">
               {activeApp.name}
@@ -124,11 +134,22 @@ export default function Home({ isLoaded }) {
                {["Finder", "Projects", "Blogs", "Experience"].map((item) => (
                   <span 
                     key={item} 
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open ${item}`}
                     onClick={() => {
                       if (item === 'Finder') openApp('finder')
                       if (item === 'Projects') openApp('projects')
                       if (item === 'Blogs') window.open('https://shivraj.dev/blog', '_blank')
                       if (item === 'Experience') openApp('experience')
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        if (item === 'Finder') openApp('finder')
+                        if (item === 'Projects') openApp('projects')
+                        if (item === 'Blogs') window.open('https://shivraj.dev/blog', '_blank')
+                        if (item === 'Experience') openApp('experience')
+                      }
                     }}
                     className={`hidden md:block opacity-90 px-2.5 rounded-md hover:bg-white/15 py-1 cursor-pointer transition-all active:scale-95 ${activeApp.name === item ? 'bg-white/10' : ''}`}
                   >
@@ -153,8 +174,12 @@ export default function Home({ isLoaded }) {
 
               <svg 
                 onClick={() => setIsSpotlightOpen(true)}
+                role="button"
+                tabIndex={0}
+                aria-label="Open Search"
                 className="w-[15px] h-[15px] opacity-80 hover:opacity-100 cursor-pointer" 
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsSpotlightOpen(true) }}
               >
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
@@ -189,11 +214,17 @@ export default function Home({ isLoaded }) {
           className="absolute top-[50px] left-6 z-10 flex flex-col gap-8 items-center pointer-events-none"
         >
           <div 
+            role="button"
+            tabIndex={0}
+            aria-label="About Me desktop icon"
             onClick={() => openApp('about')}
-            className="group flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto active:scale-95 transition-all"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') openApp('about')
+            }}
+            className="group flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto active:scale-95 transition-all outline-none"
           >
             <div className="w-[60px] h-[60px] bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 flex items-center justify-center shadow-lg group-hover:bg-white/30 transition-colors">
-              <img src="/about.svg" alt="about" className="w-[34px] h-[34px] " />
+              <Image src="/about.svg" alt="about" width={34} height={34} className="w-[34px] h-[34px] " />
             </div>
             <span className="text-[11px] font-bold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] px-1.5 py-0.5 rounded-md bg-transparent transition-all">About Me</span>
           </div>

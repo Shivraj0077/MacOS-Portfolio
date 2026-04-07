@@ -41,3 +41,9 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(120, 120, 120, 0.3) transparent;
 }
+
+/* Fix Lighthouse "overflow: visible" warning on media elements */
+img, video, canvas {
+  overflow: hidden;
+}
+

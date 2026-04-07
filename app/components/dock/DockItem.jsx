@@ -3,6 +3,8 @@ import { motion, useSpring, useTransform } from "framer-motion"
 import styles from "./dock.module.css"
 import { useWindowStore } from "@/app/store/useStore"
 import AppRegistry from "@/app/registry/appRegistry"
+import Image from "next/image"
+
 
 export default function DockItem({ app, mouseX }) {
   const itemRef = useRef(null)
@@ -43,6 +45,9 @@ export default function DockItem({ app, mouseX }) {
     <motion.div
       ref={itemRef}
       className={styles.dockItem}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${app.title}`}
       style={{
         width: widthPX,
         height: widthPX,
@@ -57,15 +62,19 @@ export default function DockItem({ app, mouseX }) {
         // Prefetch data if it's Spotify or Settings (for wallpapers)
         if (app.id === 'spotify') {
           console.log('Prefetching Spotify tracks...')
-          // In a real app, this would start the background playback or buffering
         }
         if (app.id === 'settings') {
           console.log('Prefetching wallpapers...')
-          // In a real app, this would start the image preloading
         }
       }}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleClick()
+        }
+      }}
     >
       <div
         style={{
@@ -92,19 +101,20 @@ export default function DockItem({ app, mouseX }) {
 
       <motion.div 
         className={styles.iconWrapper}
-        style={{ width: widthPX, height: widthPX }}
+        style={{ width: widthPX, height: widthPX, position: 'relative' }}
       >
-        <img
+        <Image
           src={app.icon}
           alt={app.title}
+          fill
           style={{
-            width: "100%",
-            height: "100%",
+            objectFit: 'contain',
             borderRadius: (app.id === 'maze' || app.id === 'calculator' || app.id === 'notes') ? '22%' : '0',
-            overflow: (app.id === 'maze' || app.id === 'calculator' || app.id === 'notes') ? 'hidden' : 'visible',
+            overflow: 'hidden',
             filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
           }}
           draggable="false"
+          sizes="(max-width: 768px) 40px, 64px"
         />
       </motion.div>
 

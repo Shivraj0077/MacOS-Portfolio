@@ -1,20 +1,20 @@
 "use client"
 import { lazy } from 'react'
 
-import Finder from '../apps/Finder'
-import Launchpad from '../apps/Launchpad'
-import Projects from '../apps/Projects'
-import Safari from '../apps/Safari'
-import Notes from '../apps/Notes'
-import Terminal from '../apps/Terminal'
-import Spotify from '../apps/Spotify'
-import Settings from '../apps/Settings'
-import Calculator from '../apps/Calculator'
-import Maze from '../apps/Maze'
-import Bin from '../apps/Bin'
-import About from '../apps/About'
-import Contact from '../apps/Contact'
-import Experience from '../apps/Experience'
+const Finder = lazy(() => import('../apps/Finder'))
+const Launchpad = lazy(() => import('../apps/Launchpad'))
+const Projects = lazy(() => import('../apps/Projects'))
+const Safari = lazy(() => import('../apps/Safari'))
+const Notes = lazy(() => import('../apps/Notes'))
+const Terminal = lazy(() => import('../apps/Terminal'))
+const Spotify = lazy(() => import('../apps/Spotify'))
+const Settings = lazy(() => import('../apps/Settings'))
+const Calculator = lazy(() => import('../apps/Calculator'))
+const Maze = lazy(() => import('../apps/Maze'))
+const Bin = lazy(() => import('../apps/Bin'))
+const About = lazy(() => import('../apps/About'))
+const Contact = lazy(() => import('../apps/Contact'))
+const Experience = lazy(() => import('../apps/Experience'))
 
 const AppRegistry = {
   finder: { id: "finder", name: "Finder", component: Finder, icon: "/finder.svg" },
