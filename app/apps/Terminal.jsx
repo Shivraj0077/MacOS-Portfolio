@@ -41,7 +41,7 @@ export default function Terminal() {
     skills: () => "JavaScript • TypeScript • Python • Node.js • PostgreSQL • Redis • Docker • AWS • Fastify",
     experience: () => "Software Development Intern @ Soulsoft Infotech (Apr–Aug 2025)\n• Built RAG Chatbot (4000+ docs)\n• Developed Job Portal (–50% HR workload)\n• API Optimization (–22% latency)",
     projects: () => "1. Payment Gateway System (Stripe-like)\n2. Conflict-free Scheduling Platform\n3. AI Interview Evaluation System",
-    achievements: () => `🏆 Achievements & Recognitions 🏆
+    achievements: () => `Achievements & Recognitions 
 
 * Winner: Smart India Hackathon (SIH)
   National level winner of India's premier hackathon, creating ai based decision making system for train managements for IRCTC.
