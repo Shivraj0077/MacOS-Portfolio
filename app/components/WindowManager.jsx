@@ -1,5 +1,3 @@
-import { AnimatePresence } from 'framer-motion'
-import { Suspense } from 'react'
 import { useWindowStore } from '../store/useStore'
 import AppRegistry from '../registry/appRegistry'
 import Window from './Window'
@@ -28,13 +26,7 @@ export default function WindowManager() {
             isActive={activeApp === appId}
           >
             <ErrorBoundary>
-              <Suspense fallback={
-                <div className="flex items-center justify-center w-full h-full bg-white/50 dark:bg-black/50 backdrop-blur-md">
-                   <div className="w-8 h-8 border-2 border-zinc-400 dark:border-zinc-600 border-t-transparent rounded-full animate-spin" />
-                </div>
-              }>
-                <AppComponent />
-              </Suspense>
+              <AppComponent />
             </ErrorBoundary>
           </Window>
         )
