@@ -41,6 +41,8 @@ export default function Terminal() {
     skills: () => "JavaScript • TypeScript • Python • Node.js • PostgreSQL • Redis • Docker • AWS • Fastify",
     experience: () => "Software Development Intern @ Soulsoft Infotech (Apr–Aug 2025)\n• Built RAG Chatbot (4000+ docs)\n• Developed Job Portal (–50% HR workload)\n• API Optimization (–22% latency)",
     projects: () => "1. Payment Gateway System (Stripe-like)\n2. Conflict-free Scheduling Platform\n3. AI Interview Evaluation System",
+    achievements: () => `Key Achievements:\n\n* Production-grade RAG Chatbot (4,000+ docs)\n* Internal Job Portal (-50% HR workload)\n* Zero-downtime Linux Server Deployments\n* API latency reduction (-22% better performance)\n* Payment Gateway System (Full Ledger Support)`,
+    apps: () => "Available applications (use 'open [app]'):\n\nfinder      safari      spotify      projects\nnotes       maze        settings     calculator\nabout       contact     experience   terminal\nbin",
     ai: () => `AI Assistant Ready!\n\nType a number (1-7) or use the shortcuts below:\n\n1. About Shivraj\n2. Projects\n3. Payment System\n4. Strengths\n5. What makes him different\n6. Backend Expertise\n7. Problems Solved`,
     clear: () => { setHistory([]); return null; },
     github: () => { window.open("https://github.com/Shivraj0077", "_blank"); return "Opening GitHub..."; },
