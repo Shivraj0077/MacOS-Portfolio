@@ -80,8 +80,9 @@ export default function Experience() {
 
             {/* Company Panel */}
             <div className="mb-14 p-10 rounded-[28px] 
-                            bg-white/80 dark:bg-white/5 
+                            bg-white/80 dark:bg-zinc-800/50 
                             backdrop-blur-2xl 
+                            border border-transparent dark:border-white/10
                             shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
 
               <div className="flex flex-col md:flex-row justify-between gap-8">

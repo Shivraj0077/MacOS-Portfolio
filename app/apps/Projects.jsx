@@ -115,7 +115,7 @@ export default function Projects() {
               >
                 <div className="flex flex-col gap-6">
                   {/* Image Container */}
-                  <div className="aspect-video relative rounded-3xl overflow-hidden shadow-sm bg-[#e5e5ea] dark:bg-[#2c2c2e] border border-black/5 dark:border-white/10 transition-all group-hover:shadow-xl">
+                  <div className="aspect-video relative rounded-3xl overflow-hidden shadow-sm bg-[#e5e5ea] dark:bg-zinc-800 border border-black/5 dark:border-white/10 transition-all group-hover:shadow-xl group-hover:dark:shadow-black/50">
                     <img 
                       src={project.image} 
                       alt={project.name} 

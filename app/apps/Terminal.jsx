@@ -111,10 +111,10 @@ export default function Terminal() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-[#1e1e1e] text-[#e0e0e0] font-mono text-[14px] overflow-hidden selection:bg-white/10">
+    <div className="h-full flex flex-col bg-[#1e1e1e]/90 dark:bg-zinc-900/60 text-[#e0e0e0] font-mono text-[14px] overflow-hidden selection:bg-white/10">
       
       {/* ── Terminal Content ── */}
-      <div className="flex-1 p-6 overflow-auto bg-[#1e1e1e]/95 leading-relaxed custom-scrollbar">
+      <div className="flex-1 p-6 overflow-auto leading-relaxed custom-scrollbar">
         {/* Welcome Line */}
         <div className="text-[#00ff9d] mb-4 opacity-80">
           Last login: {new Date().toString().slice(0, 24)} on ttys001

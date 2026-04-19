@@ -102,7 +102,7 @@ export default function Photos() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#f1f5f9] text-zinc-900 flex flex-col p-8 gap-12'>
+    <div className='min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#f1f5f9] dark:from-[#1c1c1e] dark:via-[#111111] dark:to-[#0a0a0a] text-zinc-900 dark:text-zinc-100 flex flex-col p-8 gap-12'>
 
       {/* Header */}
       <div className='flex items-center justify-between'>
@@ -138,8 +138,8 @@ export default function Photos() {
         </h3>
 
         {photos.length === 0 ? (
-          <div className='flex flex-col items-center justify-center p-20 rounded-3xl bg-white/60 backdrop-blur-xl border border-white/40 shadow'>
-            <span className='text-zinc-600 text-sm'>No images uploaded yet</span>
+          <div className='flex flex-col items-center justify-center p-20 rounded-3xl bg-white/60 dark:bg-[#2c2c2e]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow'>
+            <span className='text-zinc-600 dark:text-zinc-400 text-sm'>No images uploaded yet</span>
           </div>
         ) : (
           <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5'>

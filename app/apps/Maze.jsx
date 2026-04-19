@@ -1,6 +1,6 @@
-"use client"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Compass, RotateCcw, Zap, Trophy, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react"
+import { useSystemStore } from "../store/useStore"
 
 const MAZE_SIZE = 15
 const CELL_SIZE = 32
@@ -49,6 +49,7 @@ export default function MazeGame() {
   const canvasRef = useRef(null)
   const mazeRef = useRef([])
   const playerRef = useRef({ x: 1, y: 1 })
+  const theme = useSystemStore((state) => state.theme)
   const [gameWon, setGameWon] = useState(false)
   const [moves, setMoves] = useState(0)
   const [bestScore, setBestScore] = useState(null)
@@ -68,6 +69,7 @@ export default function MazeGame() {
     const ctx = canvas.getContext('2d')
     const size = MAZE_SIZE * CELL_SIZE
     const playerPos = playerRef.current
+    const isDark = theme === 'dark'
 
     if (canvas.width !== size) {
       canvas.width = size
@@ -83,7 +85,7 @@ export default function MazeGame() {
         const py = y * CELL_SIZE
 
         if (cell === 1) {
-          ctx.fillStyle = '#2c2c2e'
+          ctx.fillStyle = isDark ? '#3a3a3c' : '#2c2c2e'
           ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE)
         } else if (cell === 2) {
           ctx.fillStyle = '#30d158'
@@ -94,7 +96,7 @@ export default function MazeGame() {
           ctx.textBaseline = 'middle'
           ctx.fillText('🏁', px + CELL_SIZE / 2, py + CELL_SIZE / 2)
         } else {
-          ctx.fillStyle = '#f5f5f7'
+          ctx.fillStyle = isDark ? '#1c1c1e' : '#f5f5f7'
           ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE)
         }
       }
@@ -102,18 +104,19 @@ export default function MazeGame() {
 
     const playerX = playerPos.x * CELL_SIZE
     const playerY = playerPos.y * CELL_SIZE
-    ctx.fillStyle = '#1c1c1e'
-    ctx.shadowBlur = 12
-    ctx.shadowColor = 'rgba(0,0,0,0.3)'
+    ctx.fillStyle = isDark ? '#ffffff' : '#1c1c1e'
+    ctx.shadowBlur = isDark ? 8 : 12
+    ctx.shadowColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.3)'
     ctx.beginPath()
     ctx.arc(playerX + CELL_SIZE / 2, playerY + CELL_SIZE / 2, CELL_SIZE * 0.36, 0, Math.PI * 2)
     ctx.fill()
-    ctx.fillStyle = '#ffffff'
+    
+    ctx.fillStyle = isDark ? '#0071e3' : '#ffffff'
     ctx.shadowBlur = 0
     ctx.beginPath()
     ctx.arc(playerX + CELL_SIZE / 2, playerY + CELL_SIZE / 2, CELL_SIZE * 0.18, 0, Math.PI * 2)
     ctx.fill()
-  }, [])
+  }, [theme])
 
   // Initialize game
   useEffect(() => {

@@ -19,8 +19,8 @@ export default function About() {
                  font-sans text-[#1c1c1e] dark:text-[#f5f5f7] overflow-hidden select-none"
     >
       {/* Left Sidebar - Minimal macOS Style */}
-      <div className="w-[260px] shrink-0 bg-[#e8e8e8]/90 dark:bg-[#2c2c2c]/90 backdrop-blur-3xl 
-                      border-r border-[#d1d1d1] dark:border-[#3a3a3c] flex flex-col">
+      <div className="w-[260px] shrink-0 bg-[#e8e8e8]/90 dark:bg-[#1c1c1e]/95 backdrop-blur-3xl 
+                      border-r border-[#d1d1d1] dark:border-white/5 flex flex-col">
 
        
 
@@ -81,12 +81,12 @@ export default function About() {
                   I build high-performance distributed systems and production-grade applications with a strong focus on reliability and scalability.
                 </p>
                 
-                <p className="text-[#1c1c1e]">
+                <p className="text-[#1c1c1e] dark:text-[#f5f5f7]/90 leading-relaxed">
                   Experienced in developing payment systems, scheduling engines, multi-agent architectures, 
                   and Retrieval-Augmented Generation (RAG) solutions. 
                 </p>
                 
-                <p className="text-[#1c1c1e]">
+                <p className="text-[#1c1c1e] dark:text-[#f5f5f7]/90 leading-relaxed">
                   I work at an intermediate-to-advanced level in production environments, 
                   delivering clean, maintainable, and efficient systems that solve real-world problems.
                 </p>

@@ -6,10 +6,14 @@ export const useWindowStore = create((set, get) => ({
   activeApp: null,
   appStates: {}, // app_id: { x, y, width, height, isMaximized, isMinimized, zIndex }
 
-  openApp: (appId) => set((state) => {
+  openApp: (appId, appData = null) => set((state) => {
     // If already open, just focus and restore if minimized
     if (state.openApps.includes(appId)) {
         const nextZ = Math.max(...Object.values(state.appStates).map(s => s.zIndex || 0), 100) + 1;
+        
+        const existingData = state.appStates[appId]?.appData;
+        const newAppData = appData !== null ? appData : existingData;
+
         return { 
           activeApp: appId,
           appStates: {
@@ -17,7 +21,8 @@ export const useWindowStore = create((set, get) => ({
             [appId]: { 
               ...state.appStates[appId], 
               isMinimized: false,
-              zIndex: nextZ 
+              zIndex: nextZ,
+              appData: newAppData
             }
           }
         };
@@ -40,7 +45,8 @@ export const useWindowStore = create((set, get) => ({
       height: initialHeight,
       isMaximized: false,
       isMinimized: false,
-      zIndex: nextZ
+      zIndex: nextZ,
+      appData: appData
     };
 
     return {
@@ -117,7 +123,14 @@ export const useSystemStore = create(
       volume: 70,
       nowPlaying: null,
 
-      toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
+      toggleTheme: () => set((state) => {
+        const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+        const newWallpaper = newTheme === 'dark' ? '/wallpaper2.jpg' : '/wallpaper7.png';
+        return { 
+          theme: newTheme,
+          wallpaper: newWallpaper
+        };
+      }),
       setWallpaper: (url) => set({ wallpaper: url }),
       setBrightness: (val) => set({ brightness: val }),
       setVolume: (val) => set({ volume: val }),

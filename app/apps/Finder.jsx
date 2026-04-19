@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useStore from '../store/useStore'
 import {
   LayoutGrid, List, Search,
@@ -31,8 +31,36 @@ const documentContents = {
     title: 'Hackathons.cert',
     icon: '🏆',
     sections: [
-      { heading: 'Smart India Hackathon 2024 – Winner 🥇', items: ['Built an AI-powered document analysis system for government digitization', 'Competed against 500+ teams nationally', 'Final product deployed by the sponsoring ministry'] },
-      { heading: 'Other Competitions', items: ['Multiple college-level hackathon participations', 'Focus areas: distributed systems, AI, full-stack web'] }
+      { 
+         heading: 'Smart India Hackathon (SIH) – Winner 🥇', 
+         items: [
+           'Developed an AI-based train routing optimization system', 
+           'Implemented algorithms to dynamically manage train schedules and significantly reduce delays across complex networks',
+           'Competed against hundreds of top-tier engineering teams on a national level',
+           'Solution was highly praised by officials for its immediate real-world applicability',
+           'Official Link: https://www.sih.gov.in/'
+         ] 
+      },
+      { 
+         heading: 'Kumbhathon – Winner 🏆', 
+         items: [
+           'Engineered a highly scalable system capable of tracking and managing millions of users concurrently', 
+           'Designed specifically to manage massive crowd flows and prevent stampedes during one of the largest human gatherings',
+           'Utilized a robust, distributed backend architecture to guarantee zero downtime and low latency during extreme traffic peaks',
+           'Collaborated effectively under extreme time-pressure to deliver a live, production-ready prototype',
+           'Official Link: https://kumbhathon.com/'
+         ] 
+      },
+      { 
+         heading: 'SunHacks – Winner 🌟', 
+         items: [
+           'Built an advanced AI-based threat detection system', 
+           'Leveraged custom machine learning models to identify and neutralize security anomalies in real-time',
+           'Integrated automated, high-priority alerting pipelines for rapid incident response',
+           'Secured the winning position by demonstrating exceptional technical complexity and flawless execution',
+           'Official Link: https://sunhacks.io/'
+         ] 
+      }
     ]
   },
   intern: {
@@ -90,7 +118,21 @@ export default function Finder() {
   const [activeView, setActiveView] = useState("grid")
   const [search, setSearch] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
-  const { openApp } = useStore()
+  const { openApp, appStates } = useStore()
+
+  useEffect(() => {
+    const appData = appStates['finder']?.appData;
+    if (appData) {
+      if (appData.tab) setActiveTab(appData.tab);
+      if (appData.selectedItem) {
+        setSelectedItem(appData.selectedItem);
+        setActiveView("document");
+      } else {
+        setSelectedItem(null);
+        setActiveView("grid");
+      }
+    }
+  }, [appStates['finder']?.appData]);
 
   const ICON_COLOR = "#1d8ad3"
 
@@ -187,7 +229,7 @@ export default function Finder() {
 
   return (
     <div className="flex h-full
-      bg-[#f6f6f6] dark:bg-[#1c1c1e]
+      bg-[#f6f6f6]/90 dark:bg-[#1c1c1e]/80
       text-zinc-900 dark:text-zinc-100
       font-[system-ui,-apple-system,BlinkMacSystemFont]
       overflow-hidden">
@@ -420,9 +462,17 @@ export default function Finder() {
                 </h2>
 
                 <ul className="list-disc pl-5 space-y-1 text-zinc-700 dark:text-zinc-300">
-                  {section.items.map(item => (
-                    <li key={item}>{item}</li>
-                  ))}
+                  {section.items.map((item, idx) => {
+                    if (item.includes('Official Link:')) {
+                      const [label, url] = item.split(': ')
+                      return (
+                        <li key={idx}>
+                          {label}: <a href={url} target="_blank" className="text-blue-500 hover:underline">{url}</a>
+                        </li>
+                      )
+                    }
+                    return <li key={idx}>{item}</li>
+                  })}
                 </ul>
               </div>
             ))}

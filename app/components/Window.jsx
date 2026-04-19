@@ -89,8 +89,8 @@ export default function Window({ app, isActive, children }) {
           }}
         >
           <div
-            className={`w-full h-full bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl shadow-2xl 
-                        border border-black/10 dark:border-white/10 flex flex-col overflow-hidden
+            className={`w-full h-full bg-white/95 dark:bg-[#1c1c1e]/90 backdrop-blur-3xl shadow-2xl 
+                        border border-black/10 dark:border-white/[0.08] flex flex-col overflow-hidden
                         ${isFullScreen ? 'rounded-none' : 'rounded-[14px]'} ${isActive ? "ring-1 ring-blue-500/30" : ""}`}
           >
             {/* Title Bar */}

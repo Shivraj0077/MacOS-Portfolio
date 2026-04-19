@@ -21,13 +21,13 @@ export default function Spotlight({ isOpen, onClose }) {
     })),
 
     // ── Files & Documents (from Finder) ──
-    { id: "f1", name: "Tech Stack.md", type: "file", icon: "⚙️", category: "Files", target: "finder" },
-    { id: "f2", name: "Cloud Infrastructure.sys", type: "file", icon: "☁️", category: "Files", target: "finder" },
-    { id: "f3", name: "Hackathons.cert", type: "file", icon: "🏆", category: "Files", target: "finder" },
-    { id: "f4", name: "Internships.doc", type: "file", icon: "💼", category: "Files", target: "finder" },
-    { id: "f5", name: "Desktop", type: "folder", icon: "🖥️", category: "Folders", target: "finder" },
-    { id: "f6", name: "Projects Folder", type: "folder", icon: "📁", category: "Folders", target: "finder" },
-    { id: "f7", name: "Documents Folder", type: "folder", icon: "📄", category: "Folders", target: "finder" },
+    { id: "tech", name: "Tech Stack.md", type: "file", icon: "⚙️", category: "Files", target: "finder", tab: 'Documents' },
+    { id: "cloud", name: "Cloud Infrastructure.sys", type: "file", icon: "☁️", category: "Files", target: "finder", tab: 'Documents' },
+    { id: "hack", name: "Hackathons.cert", type: "file", icon: "🏆", category: "Files", target: "finder", tab: 'Documents' },
+    { id: "intern", name: "Internships.doc", type: "file", icon: "💼", category: "Files", target: "finder", tab: 'Documents' },
+    { id: "Desktop", name: "Desktop", type: "folder", icon: "🖥️", category: "Folders", target: "finder", tab: 'Desktop' },
+    { id: "Projects", name: "Projects Folder", type: "folder", icon: "📁", category: "Folders", target: "finder", tab: 'Projects' },
+    { id: "Documents", name: "Documents Folder", type: "folder", icon: "📄", category: "Folders", target: "finder", tab: 'Documents' },
 
     // ── Career & Experience (from Experience) ──
     { id: "e1", name: "Soulsoft Infotech (Work)", type: "experience", icon: "🏢", category: "Experience", target: "experience" },
@@ -36,10 +36,10 @@ export default function Spotlight({ isOpen, onClose }) {
     { id: "e4", name: "Codeforces Specialist", type: "achievement", icon: "🌟", category: "Achievements", target: "experience" },
 
     // ── Projects (from Projects App) ──
-    { id: "p1", name: "Payment Gateway System", type: "project", icon: "💳", category: "Projects", target: "projects" },
-    { id: "p2", name: "AI Interviewer (Adaptive)", type: "project", icon: "🤖", category: "Projects", target: "projects" },
-    { id: "p3", name: "Distributed Scheduler", type: "project", icon: "⏰", category: "Projects", target: "projects" },
-    { id: "p4", name: "macOS Portfolio OS v2", type: "project", icon: "🍎", category: "Projects", target: "projects" },
+    { id: "p1", name: "Payment Gateway System", type: "project", icon: "💳", category: "Projects", target: "finder", tab: 'Projects' },
+    { id: "p2", name: "AI Interviewer (Adaptive)", type: "project", icon: "🤖", category: "Projects", target: "finder", tab: 'Projects' },
+    { id: "p3", name: "Distributed Scheduler", type: "project", icon: "⏰", category: "Projects", target: "finder", tab: 'Projects' },
+    { id: "p4", name: "macOS Portfolio OS v2", type: "project", icon: "🍎", category: "Projects", target: "finder", tab: 'Projects' },
 
     // ── Music & Media (from Spotify) ──
     { id: "s1", name: "Blinding Lights - The Weeknd", type: "music", icon: "🎵", category: "Music", target: "spotify" },
@@ -87,9 +87,18 @@ export default function Spotlight({ isOpen, onClose }) {
   });
 
   const handleSelect = (item) => {
-    if (item.type === "app") openApp(item.id);
-    else if (item.target) openApp(item.target);
-    else if (item.type === "url") window.open(item.url, "_blank");
+    if (item.type === "app") {
+      openApp(item.id);
+    } else if (item.target === 'finder') {
+      openApp(item.target, { 
+        tab: item.tab,
+        selectedItem: (item.type === 'file' || item.type === 'project') ? { id: item.id } : null
+      });
+    } else if (item.target) {
+      openApp(item.target);
+    } else if (item.type === "url") {
+      window.open(item.url, "_blank");
+    }
     onClose();
   };
 

@@ -115,7 +115,7 @@ export default function Home({ isLoaded }) {
           initial={hasPlayedEntrance ? false : { y: -30, opacity: 0 }}
           animate={isLoaded ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-          className="absolute top-0 w-full h-[30px] bg-white/10 dark:bg-black/20 backdrop-blur-3xl border-b border-white/5 z-[10000] flex items-center px-4 justify-between text-white text-[12px] font-bold tracking-tight shadow-sm"
+          className="absolute top-0 w-full h-[30px] bg-white/60 dark:bg-black/50 backdrop-blur-3xl border-b border-black/5 dark:border-white/[0.05] z-[10000] flex items-center px-4 justify-between text-[#1d1d1f] dark:text-white/90 text-[12px] font-bold tracking-tight shadow-sm"
         >
           <div className="flex gap-4 items-center h-full">
             <div 
@@ -125,7 +125,7 @@ export default function Home({ isLoaded }) {
               className="hover:bg-white/15 px-2 rounded-md transition-colors cursor-default py-1"
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.preventDefault() }}
             >
-              <Image src="/apple-logo.svg" alt="apple" width={14} height={14} className="w-[14px] h-[14px] invert" />
+              <Image src="/apple-logo.svg" alt="apple" width={14} height={14} className="w-[14px] h-[14px] dark:invert" />
             </div>
             <span className="px-2 rounded-md hover:bg-white/15 py-1 cursor-default transition-colors">
               {activeApp.name}

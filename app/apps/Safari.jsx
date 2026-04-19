@@ -105,7 +105,7 @@ export default function Safari() {
       return (
         <iframe
           src={GOOGLE_WEBHP}
-          className="w-full h-full border-0 bg-white"
+          className="w-full h-full border-0 bg-white dark:bg-zinc-900"
           title="Google Search"
         />
       );
@@ -117,7 +117,7 @@ export default function Safari() {
       return (
         <iframe
           src={searchUrl}
-          className="w-full h-full border-0 bg-white"
+          className="w-full h-full border-0 bg-white dark:bg-zinc-900"
           title="Google Search Results"
         />
       );
@@ -207,7 +207,7 @@ export default function Safari() {
 
     // Default iframe for other sites
     return (
-      <div className="relative w-full h-full bg-white">
+      <div className="relative w-full h-full bg-white dark:bg-zinc-950">
         <iframe 
           src={url} 
           className="w-full h-full border-0"
@@ -275,7 +275,7 @@ export default function Safari() {
         </div>
       </div>
 
-      <div className="flex-1 relative overflow-hidden bg-white">
+      <div className="flex-1 relative overflow-hidden bg-white dark:bg-zinc-950">
         {renderContent()}
       </div>
     </div>
