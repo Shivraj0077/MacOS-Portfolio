@@ -76,10 +76,14 @@ export default function Home({ isLoaded }) {
   }
 
   const isSomethingMaximized = Object.values(appStates).some(s => s.isMaximized && !s.isMinimized)
+  const isMobile = winWidth < 768
+  const hasOpenApps = Object.values(appStates).some(s => !s.isMinimized)
+  
+  const shouldHideDesktopElements = isSomethingMaximized || (isMobile && hasOpenApps)
 
   return (
     <main 
-      className="relative w-full h-screen overflow-hidden select-none bg-black"
+      className="relative w-full h-full sm:h-screen overflow-hidden select-none bg-black"
       style={{ width: winWidth, height: winHeight }}
     >
       <motion.div 
@@ -109,8 +113,8 @@ export default function Home({ isLoaded }) {
       <Spotlight key={isSpotlightOpen ? "open" : "closed"} isOpen={isSpotlightOpen} onClose={() => setIsSpotlightOpen(false)} />
       <ControlCenter isOpen={isControlCenterOpen} onClose={() => setIsControlCenterOpen(false)} />
 
-      {/* Top Menu Bar - Hidden when full screen */}
-      {!isSomethingMaximized && (
+      {/* Top Menu Bar - Hidden when full screen or mobile app is open */}
+      {!shouldHideDesktopElements && (
         <motion.div 
           initial={hasPlayedEntrance ? false : { y: -30, opacity: 0 }}
           animate={isLoaded ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
@@ -127,7 +131,7 @@ export default function Home({ isLoaded }) {
             >
               <Image src="/apple-logo.svg" alt="apple" width={14} height={14} className="w-[14px] h-[14px] dark:invert" />
             </div>
-            <span className="px-2 rounded-md hover:bg-white/15 py-1 cursor-default transition-colors">
+            <span className="px-2 rounded-md hover:bg-white/15 py-1 cursor-default transition-colors font-semibold sm:font-bold">
               {activeApp.name}
             </span>
             <div className="flex items-center gap-1">
@@ -159,8 +163,8 @@ export default function Home({ isLoaded }) {
             </div>
           </div>
           
-          <div className="flex gap-3 items-center h-full pr-1">
-            <div className="flex items-center gap-4 px-2">
+          <div className="flex gap-2 sm:gap-3 items-center h-full pr-1">
+            <div className="flex items-center gap-2 sm:gap-4 px-1 sm:px-2">
               <div className="hidden sm:flex items-center opacity-85 hover:bg-white/15 px-1.5 py-1 rounded-md cursor-default">
                 <div className="w-6 h-[11px] border border-white/50 rounded-[3px] relative p-[1px] flex items-center justify-start">
                   <div className="bg-emerald-400 h-full w-[85%] rounded-[1px]" />
@@ -196,7 +200,7 @@ export default function Home({ isLoaded }) {
               </div>
             </div>
 
-            <span className="opacity-90 hover:bg-white/15 px-2 rounded-md py-1 transition-colors cursor-default tabular-nums">
+            <span className="opacity-90 hover:bg-white/15 px-2 rounded-md py-1 transition-colors cursor-default tabular-nums text-[11px] sm:text-[12px]">
               {mounted ? formatTime(currentTime) : ""}
             </span>
           </div>
@@ -206,12 +210,12 @@ export default function Home({ isLoaded }) {
       <WindowManager />
 
       {/* Desktop Icons */}
-      {!isSomethingMaximized && (
+      {!shouldHideDesktopElements && (
         <motion.div 
           initial={hasPlayedEntrance ? false : { x: -40, opacity: 0 }}
           animate={isLoaded ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-          className="absolute top-[50px] left-6 z-10 flex flex-col gap-8 items-center pointer-events-none"
+          className="absolute top-[50px] left-4 sm:left-6 z-10 flex flex-col gap-4 sm:gap-8 items-center pointer-events-none"
         >
           <div 
             role="button"
@@ -223,17 +227,17 @@ export default function Home({ isLoaded }) {
             }}
             className="group flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto active:scale-95 transition-all outline-none"
           >
-            <div className="w-[60px] h-[60px] bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 flex items-center justify-center shadow-lg group-hover:bg-white/30 transition-colors">
-              <Image src="/about.svg" alt="about" width={34} height={34} className="w-[34px] h-[34px] " />
+            <div className="w-[48px] h-[48px] sm:w-[60px] sm:h-[60px] bg-white/20 backdrop-blur-md rounded-xl sm:rounded-2xl border border-white/30 flex items-center justify-center shadow-lg group-hover:bg-white/30 transition-colors">
+              <Image src="/about.svg" alt="about" width={28} height={28} className="w-[28px] h-[28px] sm:w-[34px] sm:h-[34px] " />
             </div>
-            <span className="text-[11px] font-bold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] px-1.5 py-0.5 rounded-md bg-transparent transition-all">About Me</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] px-1.5 py-0.5 rounded-md bg-transparent transition-all">About Me</span>
           </div>
         </motion.div>
       )}
 
       <div className="absolute inset-0 pointer-events-none z-[9000] bg-black" style={{ opacity: (100 - brightness) / 100 * 0.8 }} />
 
-      {!isSomethingMaximized && (
+      {!shouldHideDesktopElements && !isMobile && (
         <motion.div 
           initial={hasPlayedEntrance ? false : { y: 80, opacity: 0 }}
           animate={isLoaded ? { y: 0, opacity: 1 } : { y: 80, opacity: 0 }}
@@ -242,6 +246,13 @@ export default function Home({ isLoaded }) {
         >
           <Dock />
         </motion.div>
+      )}
+
+      {/* Dock is always visible on mobile, even if app is full screen. On desktop, hid when maximized. */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 w-full flex justify-center pb-4 z-[10000]">
+          <Dock />
+        </div>
       )}
     </main>
   )

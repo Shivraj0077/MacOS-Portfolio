@@ -221,7 +221,7 @@ export default function MazeGame() {
           <div className="relative">
             <canvas
               ref={canvasRef}
-              className="rounded-3xl shadow-2xl border border-[#e5e5ea] dark:border-[#3a3a3c] bg-white dark:bg-[#2c2c2e]"
+              className="rounded-3xl shadow-2xl border border-[#e5e5ea] dark:border-[#3a3a3c] bg-white dark:bg-[#2c2c2e] max-w-full h-auto"
               style={{ width: MAZE_SIZE * CELL_SIZE, height: MAZE_SIZE * CELL_SIZE }}
             />
 

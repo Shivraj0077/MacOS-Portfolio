@@ -2,7 +2,7 @@
 import { useState } from "react"
 import {
   Search, StickyNote, Sparkles,
-  Share, Lock, Trash2, ChevronDown, Folder, Grid, Copy, Check
+  Share, Lock, Trash2, ChevronDown, Folder, Grid, Copy, Check, Menu
 } from "lucide-react"
 
 const IDEAS_DATABASE = {
@@ -194,6 +194,7 @@ export default function Notes() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [notFound, setNotFound] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
+  const [showSidebar, setShowSidebar] = useState(false)
 
   const generateIdeas = (e) => {
     e.preventDefault()
@@ -226,10 +227,21 @@ export default function Notes() {
   }
 
   return (
-    <div className="flex h-full bg-[#f6f6f6] dark:bg-[#1c1c1e] text-zinc-900 dark:text-zinc-100 font-sans overflow-hidden select-none">
+    <div className="flex h-full bg-[#f6f6f6] dark:bg-[#1c1c1e] text-zinc-900 dark:text-zinc-100 font-sans overflow-hidden select-none relative">
+
+      {/* Sidebar Overlay for Mobile */}
+      {showSidebar && (
+        <div 
+          className="absolute inset-0 bg-black/40 z-40 sm:hidden backdrop-blur-sm"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
       {/* ── Minimal Sidebar ── */}
-      <div className="w-56 bg-zinc-100/50 dark:bg-zinc-900/30 backdrop-blur-2xl border-r border-black/5 dark:border-white/5 p-4 flex flex-col gap-8">
+      <div className={`
+        ${showSidebar ? 'flex absolute inset-y-0 left-0 z-50 shadow-2xl' : 'hidden'} sm:flex
+        w-56 bg-zinc-100/90 dark:bg-zinc-900/95 backdrop-blur-3xl border-r border-black/5 dark:border-white/5 p-4 flex-col gap-8 transition-all duration-300
+      `}>
         <div>
           <div className="px-2 flex items-center justify-between text-zinc-400 text-[10px] uppercase tracking-widest font-bold opacity-60 mb-4">
              iCloud
@@ -248,9 +260,15 @@ export default function Notes() {
       <div className="flex-1 flex flex-col bg-white dark:bg-[#1c1c1e] overflow-auto">
         
         {/* Toolbar */}
-        <div className="h-12 flex items-center justify-between px-6 border-b border-black/5 dark:border-white/5 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl shrink-0">
-          <div className="flex gap-6">
-            <button onClick={() => { setDomain(""); setIdeas([]); setNotFound(false) }} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors">
+        <div className="h-12 flex items-center justify-between px-4 sm:px-6 border-b border-black/5 dark:border-white/5 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-xl shrink-0 gap-3">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <button 
+              onClick={() => setShowSidebar(!showSidebar)}
+              className="sm:hidden p-1.5 -ml-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-md active:scale-95 transition-all text-zinc-500 gap-2 flex items-center"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <button onClick={() => { setDomain(""); setIdeas([]); setNotFound(false) }} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors hidden sm:block">
                 <Trash2 className="w-4 h-4" />
              </button>
              <Share className="w-4 h-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer" />

@@ -54,7 +54,7 @@ export default function Window({ app, isActive, children }) {
           key={app.id}
           size={{
              width: isFullScreen ? '100vw' : windowState.width,
-             height: isFullScreen ? '100vh' : windowState.height
+             height: isFullScreen ? (isMobile ? 'calc(100dvh - 85px)' : '100vh') : windowState.height
           }}
           position={{
              x: isFullScreen ? 0 : windowState.x,
@@ -91,7 +91,7 @@ export default function Window({ app, isActive, children }) {
           <div
             className={`w-full h-full bg-white/95 dark:bg-[#1c1c1e]/90 backdrop-blur-3xl shadow-2xl 
                         border border-black/10 dark:border-white/[0.08] flex flex-col overflow-hidden
-                        ${isFullScreen ? 'rounded-none' : 'rounded-[14px]'} ${isActive ? "ring-1 ring-blue-500/30" : ""}`}
+                        ${isFullScreen ? (isMobile ? 'rounded-t-[20px] rounded-b-[20px] ring-1 ring-white/10' : 'rounded-none') : 'rounded-[14px]'} ${isActive && !isFullScreen ? "ring-1 ring-blue-500/30" : ""}`}
           >
             {/* Title Bar */}
             <div

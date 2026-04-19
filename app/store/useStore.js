@@ -125,10 +125,8 @@ export const useSystemStore = create(
 
       toggleTheme: () => set((state) => {
         const newTheme = state.theme === 'dark' ? 'light' : 'dark';
-        const newWallpaper = newTheme === 'dark' ? '/wallpaper2.jpg' : '/wallpaper7.png';
         return { 
-          theme: newTheme,
-          wallpaper: newWallpaper
+          theme: newTheme
         };
       }),
       setWallpaper: (url) => set({ wallpaper: url }),

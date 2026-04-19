@@ -118,6 +118,7 @@ export default function Finder() {
   const [activeView, setActiveView] = useState("grid")
   const [search, setSearch] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
+  const [showSidebar, setShowSidebar] = useState(false)
   const { openApp, appStates } = useStore()
 
   useEffect(() => {
@@ -232,13 +233,22 @@ export default function Finder() {
       bg-[#f6f6f6]/90 dark:bg-[#1c1c1e]/80
       text-zinc-900 dark:text-zinc-100
       font-[system-ui,-apple-system,BlinkMacSystemFont]
-      overflow-hidden">
+      overflow-hidden relative">
+
+      {/* Sidebar Overlay for Mobile */}
+      {showSidebar && (
+        <div 
+          className="absolute inset-0 bg-black/40 z-[90] sm:hidden backdrop-blur-sm transition-all"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
       {/* Sidebar */}
-      <div className="w-52 p-3
+      <div className={`w-52 p-3
         bg-white/60 dark:bg-zinc-900/40
         backdrop-blur-2xl
-        border-r border-black/5 dark:border-white/5">
+        border-r border-black/5 dark:border-white/5 
+        ${showSidebar ? 'absolute inset-y-0 left-0 z-[100] flex shadow-2xl' : 'hidden md:block'} sm:block`}>
 
         <div className="text-[10px] uppercase text-zinc-400 px-2 mb-2">
           Favorites
@@ -270,17 +280,28 @@ export default function Finder() {
       <div className="flex-1 flex flex-col">
 
         {/* Toolbar */}
-        <div className="h-11 flex items-center px-4 gap-4
+        <div className="h-11 flex items-center px-4 gap-2 sm:gap-4
           bg-white/60 dark:bg-zinc-900/40
           backdrop-blur-xl
           border-b border-black/5 dark:border-white/5">
+
+          <button 
+            onClick={() => setShowSidebar(!showSidebar)}
+            className="sm:hidden p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-md active:scale-95 transition-all text-zinc-400"
+          >
+            <div className="w-4 h-4 flex flex-col justify-center gap-0.5">
+              <span className="w-full h-0.5 bg-current rounded-full" />
+              <span className="w-full h-0.5 bg-current rounded-full" />
+              <span className="w-full h-0.5 bg-current rounded-full" />
+            </div>
+          </button>
 
           <div className="flex gap-2 opacity-40">
             <ChevronLeft className="w-4 h-4 cursor-pointer" onClick={() => activeView === 'document' && setActiveView('grid')} />
             <ChevronRight className="w-4 h-4" />
           </div>
 
-          <span className="text-sm flex-1 font-medium">{activeTab}</span>
+          <span className="text-sm flex-1 font-medium truncate">{activeTab}</span>
 
           <div className="flex bg-zinc-200/60 dark:bg-white/10 rounded-md p-0.5">
             <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded ${viewMode === 'grid' ? 'bg-white/80 dark:bg-white/10' : 'opacity-40'}`}>
@@ -297,7 +318,7 @@ export default function Finder() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search"
-              className="bg-zinc-200/60 dark:bg-white/10 backdrop-blur-md rounded-md pl-7 pr-3 py-1.5 text-sm outline-none"
+              className="bg-zinc-200/60 dark:bg-white/10 backdrop-blur-md rounded-md pl-7 pr-3 py-1.5 text-sm outline-none w-24 sm:w-32 md:w-auto transition-all"
             />
           </div>
         </div>
@@ -306,7 +327,7 @@ export default function Finder() {
         <div className="flex-1 p-6 overflow-auto">
 
           {activeView === "grid" && viewMode === 'grid' && (
-            <div className="grid grid-cols-4 gap-x-6 gap-y-10 ">
+            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-6 sm:gap-y-10 ">
               {currentItems.map(item => (
                 <div
                   key={item.id}
@@ -365,8 +386,8 @@ export default function Finder() {
     <div className="
       w-full max-w-4xl
       bg-white dark:bg-[#1e1e1e]
-      rounded-xl
-      shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+      rounded-none sm:rounded-xl
+      sm:shadow-[0_20px_60px_rgba(0,0,0,0.25)]
       border border-black/10 dark:border-white/10
       overflow-hidden
     ">

@@ -66,7 +66,7 @@ export default function Experience() {
             </span>
           </div>
 
-          <h1 className="text-[48px] font-semibold tracking-tight text-[#1D1D1F] dark:text-white leading-tight">
+          <h1 className="text-[32px] sm:text-[48px] font-semibold tracking-tight text-[#1D1D1F] dark:text-white leading-tight">
             Professional Journey
           </h1>
 
@@ -79,7 +79,7 @@ export default function Experience() {
           <div key={idx} className="exp-section">
 
             {/* Company Panel */}
-            <div className="mb-14 p-10 rounded-[28px] 
+            <div className="mb-14 p-6 sm:p-10 rounded-[28px] 
                             bg-white/80 dark:bg-zinc-800/50 
                             backdrop-blur-2xl 
                             border border-transparent dark:border-white/10

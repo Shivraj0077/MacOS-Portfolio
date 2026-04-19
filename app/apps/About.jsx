@@ -1,5 +1,5 @@
 "use client"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
 import { 
@@ -10,17 +10,25 @@ import Image from "next/image"
 
 export default function About() {
   const containerRef = useRef(null)
+  const [showSidebar, setShowSidebar] = useState(false)
 
   // Removed animations for snappy UI
 
   return (
     <div ref={containerRef}
       className="flex h-full bg-[#f1f1f1] dark:bg-[#1c1c1e] 
-                 font-sans text-[#1c1c1e] dark:text-[#f5f5f7] overflow-hidden select-none"
+                 font-sans text-[#1c1c1e] dark:text-[#f5f5f7] overflow-hidden select-none relative"
     >
+      {/* Sidebar Overlay for Mobile */}
+      {showSidebar && (
+        <div 
+          className="absolute inset-0 bg-black/40 z-30 sm:hidden backdrop-blur-sm transition-all"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
       {/* Left Sidebar - Minimal macOS Style */}
-      <div className="w-[260px] shrink-0 bg-[#e8e8e8]/90 dark:bg-[#1c1c1e]/95 backdrop-blur-3xl 
-                      border-r border-[#d1d1d1] dark:border-white/5 flex flex-col">
+      <div className={`${showSidebar ? 'flex absolute inset-y-0 left-0 z-40' : 'hidden'} sm:flex w-[260px] shrink-0 bg-[#e8e8e8]/95 dark:bg-[#1c1c1e]/98 backdrop-blur-3xl 
+                      border-r border-[#d1d1d1] dark:border-white/5 flex-col shadow-2xl sm:shadow-none transition-all duration-300`}>
 
        
 
@@ -54,13 +62,23 @@ export default function About() {
       <div className="flex-1 flex flex-col bg-white dark:bg-[#1c1c1e] overflow-hidden">
         
         {/* Top Bar */}
-        <div className="h-14 border-b border-[#e1e1e1] dark:border-[#3a3a3c] flex items-center px-8 shrink-0">
-          <Info className="w-5 h-5 text-[#8e8e93] mr-3" />
+        <div className="h-14 border-b border-[#e1e1e1] dark:border-[#3a3a3c] flex items-center px-4 sm:px-8 shrink-0 gap-3">
+          <button 
+            onClick={() => setShowSidebar(!showSidebar)}
+            className="sm:hidden p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg active:scale-95 transition-all text-[#8e8e93]"
+          >
+            <div className="w-5 h-5 flex flex-col justify-center gap-1">
+              <span className="w-full h-0.5 bg-current rounded-full" />
+              <span className="w-full h-0.5 bg-current rounded-full" />
+              <span className="w-full h-0.5 bg-current rounded-full" />
+            </div>
+          </button>
+          <Info className="w-5 h-5 text-[#8e8e93]" />
           <span className="font-semibold text-[15px] tracking-tight">About</span>
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto p-12 main-content">
+        <div className="flex-1 overflow-auto p-6 sm:p-12 main-content">
           <div className="max-w-3xl mx-auto">
             
             {/* Name + Title */}
@@ -70,8 +88,8 @@ export default function About() {
                   <img src="/about.svg" alt="Shivraj Pawar" className="w-full h-full object-cover" />
                 </div>
               </div>
-              <h1 className="text-[52px] font-bold tracking-tighter leading-none mb-2">Shivraj Pawar</h1>
-              <p className="text-[#8e8e93] text-xl font-medium">Software Engineer & AI Engineer</p>
+              <h1 className="text-[36px] sm:text-[52px] font-bold tracking-tighter leading-none mb-2">Shivraj Pawar</h1>
+              <p className="text-[#8e8e93] text-lg sm:text-xl font-medium">Software Engineer & AI Engineer</p>
             </div>
 
             {/* Right-aligned Summary Content */}

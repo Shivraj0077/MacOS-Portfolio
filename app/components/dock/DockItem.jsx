@@ -12,9 +12,10 @@ export default function DockItem({ app, mouseX }) {
   const openApp = useWindowStore((state) => state.openApp)
   const isOpen = useWindowStore((state) => state.openApps.includes(app.id))
 
-  const baseWidth = 40;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const baseWidth = isMobile ? 32 : 40;
   const distanceLimit = baseWidth * 6;
-  const dockMag = 1.6;
+  const dockMag = isMobile ? 1.3 : 1.6;
 
   const distance = useTransform(mouseX, (val) => {
     const el = itemRef.current;

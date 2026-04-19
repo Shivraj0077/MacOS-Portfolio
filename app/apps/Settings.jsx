@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useSystemStore } from '../store/useStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Menu } from 'lucide-react'
 
 /* ─── Sidebar nav items ───────────────────────────────────────── */
 const NAV_ITEMS = [
@@ -102,6 +102,7 @@ export default function Settings() {
   const [accentColor, setAccentColor] = useState('#0071e3')
   const [reduceTransparency, setReduceTransparency] = useState(false)
   const [increaseContrast, setIncreaseContrast] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(false)
 
   const wallpapers = [
     { id: 1, src: '/wallpaper2.jpg', name: 'Those Eyes' },
@@ -112,19 +113,27 @@ export default function Settings() {
 
   return (
     <div
-      className="flex h-full overflow-hidden select-none"
+      className="flex flex-col sm:flex-row h-full overflow-hidden select-none relative"
       style={{ fontFamily: "-apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif" }}
     >
+      {/* Mobile Sidebar Overlay */}
+      {showSidebar && (
+        <div 
+          className="absolute inset-0 bg-black/40 z-30 sm:hidden backdrop-blur-sm"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
       {/* ── Sidebar ── */}
       <aside
-        className="
-          w-[240px] flex-shrink-0 flex flex-col
-          bg-[rgba(255,255,255,0.72)] dark:bg-[rgba(44,44,46,0.85)]
+        className={`
+          ${showSidebar ? 'flex absolute inset-y-0 left-0 z-40' : 'hidden'} sm:flex
+          w-[240px] flex-shrink-0 flex-col shadow-2xl sm:shadow-none
+          bg-[rgba(255,255,255,0.85)] dark:bg-[rgba(44,44,46,0.95)]
           border-r border-black/8 dark:border-white/7
           backdrop-blur-[40px]
-          transition-[background,border-color] duration-300
-        "
+          transition-all duration-300
+        `}
       >
         {/* Header */}
         <div className="px-4 pt-5 pb-2 flex-shrink-0">
@@ -144,15 +153,28 @@ export default function Settings() {
               key={item.id}
               item={item}
               active={activeTab === item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => { setActiveTab(item.id); setShowSidebar(false); }}
             />
           ))}
         </nav>
       </aside>
 
       {/* ── Content ── */}
-      <main className="flex-1 overflow-y-auto bg-[#f5f5f7] dark:bg-[#1c1c1e] transition-[background] duration-300">
-        <div className="max-w-[660px] mx-auto px-9 py-8">
+      <main className="flex-1 flex flex-col overflow-hidden bg-[#f5f5f7] dark:bg-[#1c1c1e] transition-colors duration-300">
+        
+        {/* Mobile Header */}
+        <div className="sm:hidden h-14 border-b border-black/10 dark:border-white/10 flex items-center px-4 shrink-0 bg-white/50 dark:bg-black/50 backdrop-blur-xl">
+          <button 
+            onClick={() => setShowSidebar(true)}
+            className="p-2 -ml-2 rounded-lg active:bg-black/5 transition-colors"
+          >
+            <Menu className="w-5 h-5 text-zinc-600 dark:text-zinc-300" />
+          </button>
+          <span className="font-semibold ml-2 text-[15px]">{NAV_ITEMS.find(i => i.id === activeTab)?.label}</span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-[660px] mx-auto px-4 sm:px-9 py-6 sm:py-8">
 
           <AnimatePresence mode="wait">
 
@@ -358,6 +380,7 @@ export default function Settings() {
             )}
 
           </AnimatePresence>
+          </div>
         </div>
       </main>
     </div>

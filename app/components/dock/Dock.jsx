@@ -29,12 +29,15 @@ export function Dock() {
   return (
     <div className={styles.dockContainer}>
       <div 
-        className={styles.dockWrapper}
+        className={`${styles.dockWrapper} custom-scrollbar`}
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(null)}
         style={{
-          gap: '10px',
-          padding: '8px 12px',
+          gap: 'clamp(4px, 1.5vw, 10px)',
+          padding: '8px 12px 14px 12px',
+          maxWidth: '95vw',
+          overflowX: 'auto',
+          overflowY: 'hidden'
         }}
       >
         {dockAppIds.map((id) => {
