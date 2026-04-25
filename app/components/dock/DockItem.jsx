@@ -56,7 +56,10 @@ export default function DockItem({ app, mouseX }) {
         alignItems: "flex-end",
         justifyContent: "center",
         position: "relative",
-        cursor: "pointer"
+        cursor: "pointer",
+        willChange: "width",
+        WebkitBackfaceVisibility: "hidden",
+        transform: "translateZ(0)"
       }}
       onMouseEnter={() => {
         setIsHovered(true)
@@ -102,7 +105,7 @@ export default function DockItem({ app, mouseX }) {
 
       <motion.div 
         className={styles.iconWrapper}
-        style={{ width: widthPX, height: widthPX, position: 'relative' }}
+        style={{ width: widthPX, height: widthPX, position: 'relative', willChange: "width", transform: "translateY(-3px) translateZ(0)", WebkitBackfaceVisibility: "hidden" }}
       >
         <Image
           src={app.icon}

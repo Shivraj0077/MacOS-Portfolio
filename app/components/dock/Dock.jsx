@@ -35,9 +35,7 @@ export function Dock() {
         style={{
           gap: 'clamp(4px, 1.5vw, 10px)',
           padding: '8px 12px 14px 12px',
-          maxWidth: '95vw',
-          overflowX: 'auto',
-          overflowY: 'hidden'
+          maxWidth: '95vw'
         }}
       >
         {dockAppIds.map((id) => {
