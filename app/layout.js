@@ -18,10 +18,10 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   metadataBase: new URL('https://shivraj7.vercel.app'),
-  title: "MacOS Portfolio",
+  title: "Shivraj's MacOS Portfolio",
   description: "A high-performance, macOS-inspired portfolio",
   openGraph: {
-    title: "MacOS Portfolio",
+    title: "Shivraj's MacOS Portfolio",
     description: "A high-performance, macOS-inspired portfolio",
     url: "https://shivraj7.vercel.app",
     siteName: "Shivraj Portfolio",
