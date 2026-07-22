@@ -21,7 +21,7 @@ const SITE_URL = "https://shivraj7.vercel.app";
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Shivraj Pawar | macOS Portfolio | Software & AI Engineer",
+    default: "Shivraj Pawar Portfolio",
     template: "%s | Shivraj Pawar",
   },
   description:
