@@ -160,8 +160,6 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 <div align="center">
 
-Crafted with ❤️ and a touch of Apple magic.
-
 [Back to top ↑](#-macos-portfolio--nextjs-16-interactive-desktop)
 
 </div>
