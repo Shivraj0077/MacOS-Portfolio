@@ -144,14 +144,14 @@ export default function Home({ isLoaded }) {
                     onClick={() => {
                       if (item === 'Finder') openApp('finder')
                       if (item === 'Projects') openApp('projects')
-                      if (item === 'Blogs') window.open('https://shivraj.dev/blog', '_blank')
+                      if (item === 'Blogs') window.open('blogs')
                       if (item === 'Experience') openApp('experience')
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         if (item === 'Finder') openApp('finder')
                         if (item === 'Projects') openApp('projects')
-                        if (item === 'Blogs') window.open('https://shivraj.dev/blog', '_blank')
+                        if (item === 'Blogs') window.open('_blank')
                         if (item === 'Experience') openApp('experience')
                       }
                     }}
